@@ -229,7 +229,7 @@ export default function CharacterProfile() {
                         )}
                       </div>
                     </div>
-                    {canEdit && (
+                    {canEdit && urlParams.get('from') === 'characters-list' && (
                       <Button
                         variant="outline"
                         size="sm"
