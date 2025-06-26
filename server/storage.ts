@@ -2298,22 +2298,20 @@ export class DatabaseStorage implements IStorage {
   async getInviteCode(code: string): Promise<any> {
     const { data, error } = await supabase
       .from("invite_codes")
-      .select("*")
+      .select("id, code, is_used, created_at, updated_at, created_by_user_id")
       .eq("code", code)
       .single();
-
     if (error) {
       console.error("Error fetching invite code:", error);
       return null;
     }
-
     return data;
   }
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
     const { data: invite, error } = await supabase
       .from('invite_codes')
-      .select('*')
+      .select('id, is_used')
       .eq('code', code)
       .single();
     if (error || !invite) {
@@ -2328,8 +2326,7 @@ export class DatabaseStorage implements IStorage {
       .from('invite_codes')
       .update({
         is_used: true,
-        used_at: new Date().toISOString(),
-        used_by: userId
+        updated_at: new Date().toISOString()
       })
       .eq('id', invite.id);
     if (updateError) {
@@ -2340,10 +2337,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllInviteCodes(): Promise<any[]> {
-    // Vrací všechny kódy včetně info o použití, datumu vytvoření a použití, a uživateli
     const { data, error } = await supabase
       .from('invite_codes')
-      .select('id, code, is_used, created_at, used_at, used_by, users:used_by (username)')
+      .select('id, code, is_used, created_at, updated_at, created_by_user_id')
       .order('created_at', { ascending: false });
     if (error) {
       console.error('getAllInviteCodes: Error fetching invite codes', error);
@@ -2352,16 +2348,15 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async createInviteCode(codeObj: { code: string }): Promise<any> {
+  async createInviteCode(codeObj: { code: string, createdByUserId: number }): Promise<any> {
     const { data, error } = await supabase
       .from('invite_codes')
       .insert({
         code: codeObj.code,
         is_used: false,
-        used_at: null,
-        used_by: null
+        created_by_user_id: codeObj.createdByUserId
       })
-      .select()
+      .select('id, code, is_used, created_at, updated_at, created_by_user_id')
       .single();
     if (error) {
       console.error('createInviteCode: Error creating invite code', error);

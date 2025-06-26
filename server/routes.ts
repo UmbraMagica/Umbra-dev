@@ -1835,13 +1835,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!code) {
         return res.status(400).json({ message: "Chybí kód" });
       }
-      const newInvite = await storage.createInviteCode({ code });
+      const createdByUserId = req.user?.id;
+      const newInvite = await storage.createInviteCode({ code, createdByUserId });
       res.status(200).json(newInvite);
-          } catch (error) {
-        console.error("Chyba při vytváření invite kódu:", error);
-        res.status(500).json({ message: "Chyba při vytváření invite kódu" });
-      }
-    });
+    } catch (error) {
+      console.error("Chyba při vytváření invite kódu:", error);
+      res.status(500).json({ message: "Chyba při vytváření invite kódu" });
+    }
+  });
 
   // --- ADMIN: Získání všech invite kódů ---
   app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
