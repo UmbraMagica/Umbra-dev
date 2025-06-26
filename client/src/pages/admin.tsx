@@ -1143,11 +1143,11 @@ export default function Admin() {
                             >
                               <div className="flex items-center gap-3">
                                 <div className={`w-3 h-3 rounded-full ${
-                                  entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
+                                  (entry.side === 'grindelwald' || entry.side === 'Grindelwald') ? 'bg-red-600' : 'bg-blue-600'
                                 }`}></div>
                                 <div>
                                   <div className="font-medium text-sm">
-                                    {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
+                                    {(entry.side === 'grindelwald' || entry.side === 'Grindelwald') ? 'Grindelwald' : 'Brumbál'}:
                                     <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
                                       {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
                                     </span>
