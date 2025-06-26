@@ -2349,7 +2349,7 @@ export class DatabaseStorage implements IStorage {
       console.error('getAllInviteCodes: Error fetching invite codes', error);
       return [];
     }
-    return data || [];
+    return toCamel(data || []);
   }
 
   async createInviteCode(codeObj: { code: string }): Promise<any> {
