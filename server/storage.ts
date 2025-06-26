@@ -2339,7 +2339,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllInviteCodes(): Promise<any[]> {
-    const { data, error } = await supabase.from('invite_codes').select('*');
+    // Vrací všechny kódy včetně info o použití, datumu vytvoření a použití, a uživateli
+    const { data, error } = await supabase
+      .from('invite_codes')
+      .select('id, code, is_used, created_at, used_at, used_by, users:used_by (username)')
+      .order('created_at', { ascending: false });
     if (error) {
       console.error('getAllInviteCodes: Error fetching invite codes', error);
       return [];

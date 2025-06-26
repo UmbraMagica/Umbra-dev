@@ -1379,12 +1379,18 @@ export default function Admin() {
                             <code className="font-mono bg-muted px-2 py-1 rounded text-xs">
                               {code.code}
                             </code>
-                            <Badge variant={code.isUsed ? "secondary" : "default"}>
-                              {code.isUsed ? "Použito" : "Aktivní"}
+                            <Badge variant={code.is_used ? "secondary" : "default"}>
+                              {code.is_used ? "Použito" : "Aktivní"}
                             </Badge>
+                            {code.is_used && code.users && code.users.username && (
+                              <span className="ml-2 text-xs text-muted-foreground">použil: {code.users.username}</span>
+                            )}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {new Date(code.createdAt).toLocaleDateString('cs-CZ')}
+                          <div className="flex flex-col items-end text-xs text-muted-foreground">
+                            <span>Vytvořeno: {code.created_at ? new Date(code.created_at).toLocaleDateString('cs-CZ') : '-'}</span>
+                            {code.is_used && code.used_at && (
+                              <span>Použito: {new Date(code.used_at).toLocaleDateString('cs-CZ')}</span>
+                            )}
                           </div>
                         </div>
                       ))}
