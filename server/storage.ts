@@ -237,7 +237,8 @@ export interface IStorage {
     clearChatMessages(roomId: number): Promise<{ count: number }>;
     getRoomPresence(roomId: number): Promise<any>;
 
-
+  // ... existing code ...
+  getCharactersInChatRooms(): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2367,6 +2368,38 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
     return data;
+  }
+
+  async getCharactersInChatRooms(): Promise<any[]> {
+    // Získáme aktuální přítomnost v místnostech
+    const { data, error } = await supabase
+      .from('room_presence')
+      .select(`character_id, room_id, characters:character_id (id, first_name, middle_name, last_name, avatar, is_system, death_date), rooms:room_id (id, name)`)
+      .eq('is_online', true);
+    if (error) {
+      console.error('getCharactersInChatRooms: Error fetching presence', error);
+      return [];
+    }
+    // Transformace na požadovaný formát
+    return (data || []).map((row: any) => {
+      const char = row.characters;
+      const room = row.rooms;
+      return {
+        id: char.id,
+        firstName: char.first_name,
+        middleName: char.middle_name,
+        lastName: char.last_name,
+        avatar: char.avatar,
+        isSystem: char.is_system,
+        deathDate: char.death_date,
+        roomId: room.id,
+        roomName: room.name
+      };
+    });
+  }
+
+  async createCharacter(character: any): Promise<any> {
+    throw new Error('Not implemented: createCharacter');
   }
 }
 
