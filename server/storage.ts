@@ -1523,7 +1523,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteJournalEntry(id: number): Promise<boolean> {
-    const { error }The code adds a new method to retrieve active characters and integrates it into the storage interface and class implementation.await supabase
+    const { error } = await supabase
       .from('character_journal')
       .delete()
       .eq('id', id);
