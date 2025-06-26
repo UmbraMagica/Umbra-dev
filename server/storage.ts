@@ -1802,10 +1802,8 @@ export class DatabaseStorage implements IStorage {
       .eq('id', 1)
       .single();
 
-    const previousTotal = existing
-      ? (existing.grindelwald_points + existing.dumbledore_points)
-      : 0;
-    const newTotal = grindelwaldPoints + dumbledorePoints;
+    const prevGrindelwald = existing ? existing.grindelwald_points : 0;
+    const prevDumbledore = existing ? existing.dumbledore_points : 0;
 
     // Aktualizuj influence_bar
     const { error: updateError } = await supabase
@@ -1822,28 +1820,66 @@ export class DatabaseStorage implements IStorage {
       throw updateError;
     }
 
-    // Urči komu byly body přičteny
-    let changedSide: 'grindelwald' | 'dumbledore' | null = side || null;
-    if (!changedSide && existing) {
-      if (grindelwaldPoints > existing.grindelwald_points) changedSide = 'grindelwald';
-      else if (dumbledorePoints > existing.dumbledore_points) changedSide = 'dumbledore';
-    }
-
-    // Zapiš změnu do history
-    const { error: histError } = await supabase
-      .from('influence_history')
-      .insert([{
+    // Připrav history zápis podle změněné strany
+    let historyRows = [];
+    if (side === 'grindelwald') {
+      historyRows.push({
         change_type: 'manual',
-        points_changed: newTotal - previousTotal,
+        points_changed: grindelwaldPoints - prevGrindelwald,
+        previous_total: prevGrindelwald,
+        new_total: grindelwaldPoints,
         reason,
         admin_id: userId,
-        side: changedSide ?? 'reset',
+        side: 'grindelwald',
         created_at: now
-      }]);
+      });
+    } else if (side === 'dumbledore') {
+      historyRows.push({
+        change_type: 'manual',
+        points_changed: dumbledorePoints - prevDumbledore,
+        previous_total: prevDumbledore,
+        new_total: dumbledorePoints,
+        reason,
+        admin_id: userId,
+        side: 'dumbledore',
+        created_at: now
+      });
+    } else {
+      // Reset nebo změna obou stran
+      if (grindelwaldPoints !== prevGrindelwald) {
+        historyRows.push({
+          change_type: 'manual',
+          points_changed: grindelwaldPoints - prevGrindelwald,
+          previous_total: prevGrindelwald,
+          new_total: grindelwaldPoints,
+          reason: reason || 'reset',
+          admin_id: userId,
+          side: 'grindelwald',
+          created_at: now
+        });
+      }
+      if (dumbledorePoints !== prevDumbledore) {
+        historyRows.push({
+          change_type: 'manual',
+          points_changed: dumbledorePoints - prevDumbledore,
+          previous_total: prevDumbledore,
+          new_total: dumbledorePoints,
+          reason: reason || 'reset',
+          admin_id: userId,
+          side: 'dumbledore',
+          created_at: now
+        });
+      }
+    }
 
-    if (histError) {
-      console.error("Error inserting influence_history:", histError);
-      throw histError;
+    if (historyRows.length > 0) {
+      const { error: histError } = await supabase
+        .from('influence_history')
+        .insert(historyRows);
+      if (histError) {
+        console.error("Error inserting influence_history:", histError);
+        throw histError;
+      }
     }
   }
 
