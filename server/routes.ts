@@ -624,60 +624,78 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Seznam online postav
   app.get("/api/characters/online", requireAuth, async (_req, res) => {
     try {
-      // Pro demonstraci vraťme alespoň aktivní postavy s validními daty
+      console.log("[ONLINE] Fetching online characters...");
+      
+      // Získáme všechny aktivní postavy
       const activeCharacters = await storage.getActiveCharacters();
       
       if (!activeCharacters || !Array.isArray(activeCharacters)) {
-        console.warn("No active characters or invalid format");
+        console.warn("[ONLINE] No active characters or invalid format");
         return res.json([]);
       }
 
+      console.log(`[ONLINE] Found ${activeCharacters.length} active characters`);
+
       const validOnlineCharacters = activeCharacters
         .filter((char: any) => {
-          // Extra safety checks for null/undefined values
+          // Důkladné kontroly pro validní data
           if (!char || typeof char !== 'object') {
             console.warn("[ONLINE] Invalid character object:", char);
             return false;
           }
 
-          const firstName = char.firstName;
-          const lastName = char.lastName;
+          // Kontrola kritických polí
+          const hasValidId = typeof char.id === 'number' && char.id > 0;
+          const hasValidFirstName = typeof char.firstName === 'string' && char.firstName?.trim() !== '';
+          const hasValidLastName = typeof char.lastName === 'string' && char.lastName?.trim() !== '';
+          const isAlive = !char.deathDate;
+          const isNotSystem = !char.isSystem;
 
-          if (firstName === null || firstName === undefined || lastName === null || lastName === undefined) {
-            console.warn("[ONLINE] Character has null/undefined name fields:", {
+          if (!hasValidId || !hasValidFirstName || !hasValidLastName || !isAlive || !isNotSystem) {
+            console.warn("[ONLINE] Character filtered out:", {
               id: char.id,
-              firstName,
-              lastName
+              firstName: char.firstName,
+              lastName: char.lastName,
+              hasValidId,
+              hasValidFirstName,
+              hasValidLastName,
+              isAlive,
+              isNotSystem
             });
             return false;
           }
 
-          // Filter out invalid characters
-          return char.id && 
-                 firstName && 
-                 lastName && 
-                 typeof firstName === 'string' && 
-                 typeof lastName === 'string' &&
-                 firstName.trim() !== '' &&
-                 lastName.trim() !== '' &&
-                 !char.deathDate &&
-                 !char.isSystem;
+          return true;
         })
-        .map((char: any) => ({
-          id: char.id,
-          fullName: `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`,
-          firstName: char.firstName,
-          middleName: char.middleName || null,
-          lastName: char.lastName,
-          location: "Hlavní hala", // Placeholder
-          avatar: char.avatar || null
-        }));
+        .map((char: any) => {
+          const fullName = `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`;
+          
+          return {
+            id: char.id,
+            fullName: fullName,
+            firstName: char.firstName,
+            middleName: char.middleName || null,
+            lastName: char.lastName,
+            location: "Hlavní hala", // Placeholder - později můžeme přidat skutečnou lokaci
+            avatar: char.avatar || null,
+            isOnline: true // Pro budoucí použití
+          };
+        });
       
       console.log(`[ONLINE] Returning ${validOnlineCharacters.length} valid online characters`);
+      
+      // Debug log prvních několika postav
+      if (validOnlineCharacters.length > 0) {
+        console.log("[ONLINE] Sample characters:", validOnlineCharacters.slice(0, 3).map(c => ({
+          id: c.id,
+          fullName: c.fullName
+        })));
+      }
+      
       res.json(validOnlineCharacters);
     } catch (error) {
-      console.error("Error fetching online characters:", error);
-      res.json([]);
+      console.error("[ONLINE] Error fetching online characters:", error);
+      res.status(500).json({ message: "Failed to fetch online characters", characters: [] });
     }
   });
 

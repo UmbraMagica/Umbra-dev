@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 
@@ -11,8 +10,15 @@ interface Character {
 }
 
 interface CharacterAvatarProps {
-  character: Character | null | undefined;
-  size?: "xs" | "sm" | "md" | "lg";
+  character: {
+    id?: number;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    avatar?: string;
+    fullName?: string;
+  };
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -23,42 +29,42 @@ const sizeClasses = {
   lg: "h-12 w-12 text-lg"
 };
 
-export function CharacterAvatar({ character, size = "md", className = "" }: CharacterAvatarProps) {
-  // Safety check for character existence and required fields
-  if (!character || !character.firstName || !character.lastName) {
-    console.warn('[CharacterAvatar] Invalid character data:', character);
-    return (
-      <Avatar className={`${sizeClasses[size]} ${className}`}>
-        <AvatarFallback>
-          <User className="h-4 w-4" />
-        </AvatarFallback>
-      </Avatar>
-    );
-  }
-
-  // Generate initials safely
-  const getInitials = () => {
-    try {
-      const firstInitial = character.firstName?.charAt(0)?.toUpperCase() || '?';
-      const lastInitial = character.lastName?.charAt(0)?.toUpperCase() || '?';
-      return `${firstInitial}${lastInitial}`;
-    } catch (error) {
-      console.error('[CharacterAvatar] Error generating initials:', error, character);
-      return '??';
-    }
+export function CharacterAvatar({ character, size = "md", className }: CharacterAvatarProps) {
+  const sizeClasses = {
+    sm: "h-8 w-8 text-xs",
+    md: "h-12 w-12 text-sm",
+    lg: "h-16 w-16 text-base"
   };
 
-  const initials = getInitials();
+  // Bezpečné získání jména s kontrolou na null/undefined
+  const firstName = character.firstName || '';
+  const lastName = character.lastName || '';
+  const displayName = character.fullName || `${firstName} ${lastName}`.trim();
+
+  // Bezpečné vytvoření iniciál
+  let initials = "?";
+  if (displayName && displayName.trim() !== '') {
+    initials = displayName
+      .split(' ')
+      .filter(name => name && name.trim() !== '') // Filtrujeme prázdné části
+      .map(name => name.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  } else if (firstName && lastName) {
+    initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  } else if (firstName) {
+    initials = firstName.charAt(0).toUpperCase();
+  } else if (lastName) {
+    initials = lastName.charAt(0).toUpperCase();
+  }
 
   return (
-    <Avatar className={`${sizeClasses[size]} ${className}`}>
-      {character.avatar && (
-        <AvatarImage 
-          src={character.avatar} 
-          alt={`${character.firstName} ${character.lastName}`}
-        />
-      )}
-      <AvatarFallback className="bg-primary/10 text-primary font-medium">
+    <Avatar className={cn(sizeClasses[size], className)}>
+      {character.avatar ? (
+        <AvatarImage src={character.avatar} alt={displayName || "Postava"} />
+      ) : null}
+      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
         {initials}
       </AvatarFallback>
     </Avatar>

@@ -25,7 +25,7 @@ import CharacterHistory from "@/pages/character-history";
 import CharacterInventory from "@/pages/character-inventory";
 import CharacterJournal from "@/pages/character-journal";
 import CharacterSpells from "@/pages/character-spells";
-import CharacterEdit from "./pages/character-edit";
+import CharacterEdit from "@/pages/character-edit";
 import MySpells from "@/pages/my-spells";
 import UserSettings from "@/pages/user-settings";
 import Cemetery from "@/pages/cemetery";
@@ -83,7 +83,7 @@ function Router() {
             <Route path="/chat-test" component={ChatRoomSimpleTest} />
             <Route path="/characters" component={CharactersList} />
             <Route path="/characters/:id" component={CharacterProfile} />
-            <Route path="/characters/:id/edit" component={CharacterEditFixedNav} />
+            <Route path="/characters/:id/edit" component={CharacterEdit} />
             <Route path="/characters/:id/history" component={CharacterHistory} />
             <Route path="/character/:id" component={CharacterProfile} />
             <Route path="/characters/:characterId/inventory" component={CharacterInventory} />

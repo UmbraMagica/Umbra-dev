@@ -785,8 +785,7 @@ export class DatabaseStorage implements IStorage {
     console.log('validateUser - user:', user);
     if (!user) return null;
 
-    const isValidPassword```tool_code
- = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password);
     console.log('validateUser - isValidPassword:', isValidPassword, 'hash:', user.password, 'input:', password);
     return isValidPassword ? user : null;
   }
@@ -1244,44 +1243,79 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveCharacters(): Promise<any[]> {
     try {
+      console.log("[STORAGE] Fetching active characters from database...");
+
       const { data, error } = await supabase
         .from('characters')
-        .select('*')
+        .select(`
+          id,
+          user_id,
+          first_name,
+          middle_name,
+          last_name,
+          birth_date,
+          school,
+          description,
+          avatar,
+          residence,
+          height,
+          weight,
+          character_history,
+          show_history_to_others,
+          is_active,
+          death_date,
+          is_system,
+          created_at,
+          updated_at
+        `)
         .eq('is_active', true)
         .is('death_date', null)
-        .not('first_name', 'is', null)
-        .not('last_name', 'is', null)
-        .neq('first_name', '')
-        .neq('last_name', '');
+        .eq('is_system', false);
 
       if (error) {
-        console.error('Database error in getActiveCharacters:', error);
-        throw error;
-      }
-
-      if (!data || !Array.isArray(data)) {
-        console.warn('getActiveCharacters: No data or invalid format');
+        console.error('[STORAGE] Error fetching active characters:', error);
         return [];
       }
 
-      // Transform to consistent format
-      const transformedCharacters = data.map((char: any) => ({
+      if (!data || data.length === 0) {
+        console.warn('[STORAGE] No active characters found');
+        return [];
+      }
+
+      console.log(`[STORAGE] Found ${data.length} active characters`);
+
+      // Transformace dat do správného formátu
+      const transformedData = data.map((char: any) => ({
         id: char.id,
         userId: char.user_id,
         firstName: char.first_name,
         middleName: char.middle_name,
         lastName: char.last_name,
         birthDate: char.birth_date,
+        school: char.school,
+        description: char.description,
+        avatar: char.avatar,
+        residence: char.residence,
+        height: char.height,
+        weight: char.weight,
+        characterHistory: char.character_history,
+        showHistoryToOthers: char.show_history_to_others,
         isActive: char.is_active,
-        isSystem: char.is_system || false,
         deathDate: char.death_date,
-        avatar: char.avatar
+        isSystem: char.is_system,
+        createdAt: char.created_at,
+        updatedAt: char.updated_at
       }));
 
-      console.log(`[getActiveCharacters] Returning ${transformedCharacters.length} active characters`);
-      return transformedCharacters;
+      console.log("[STORAGE] Sample transformed character:", transformedData[0] ? {
+        id: transformedData[0].id,
+        firstName: transformedData[0].firstName,
+        lastName: transformedData[0].lastName
+      } : "No characters");
+
+      return transformedData;
     } catch (error) {
-      console.error('Error getting active characters:', error);
+      console.error('[STORAGE] Error in getActiveCharacters:', error);
       return [];
     }
   }
