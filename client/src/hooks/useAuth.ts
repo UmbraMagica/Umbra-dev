@@ -23,16 +23,32 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Helper function to validate character object
 function isValidCharacter(char: any): char is Character {
-  return char && 
-         typeof char === 'object' && 
-         typeof char.id === 'number' && 
-         char.id > 0 &&
-         typeof char.firstName === 'string' && 
-         char.firstName?.trim() !== '' &&
-         typeof char.lastName === 'string' &&
-         char.lastName?.trim() !== '' &&
-         typeof char.userId === 'number' &&
-         char.userId > 0;
+  if (!char || typeof char !== 'object') {
+    console.warn('[isValidCharacter] Invalid character object:', char);
+    return false;
+  }
+
+  const checks = {
+    hasValidId: typeof char.id === 'number' && char.id > 0,
+    hasValidFirstName: typeof char.firstName === 'string' && char.firstName?.trim() !== '',
+    hasValidLastName: typeof char.lastName === 'string' && char.lastName?.trim() !== '',
+    hasValidUserId: typeof char.userId === 'number' && char.userId > 0
+  };
+
+  const isValid = checks.hasValidId && checks.hasValidFirstName && checks.hasValidLastName && checks.hasValidUserId;
+
+  if (!isValid) {
+    console.warn('[isValidCharacter] Character validation failed:', {
+      character: char,
+      checks,
+      firstName: char.firstName,
+      lastName: char.lastName,
+      firstNameType: typeof char.firstName,
+      lastNameType: typeof char.lastName
+    });
+  }
+
+  return isValid;
 }
 
 // Helper function to safely process characters
@@ -54,28 +70,29 @@ function processCharacters(charactersData: any): Character[] {
     }
 
     const validCharacters = charactersArray.filter((char, index) => {
-      if (!char || typeof char !== 'object') {
-        console.warn(`[processCharacters] Invalid character object at index ${index}`);
+      try {
+        if (!char || typeof char !== 'object') {
+          console.warn(`[processCharacters] Invalid character object at index ${index}:`, char);
+          return false;
+        }
+
+        // Additional safety checks for critical fields
+        if (char.firstName === null || char.firstName === undefined) {
+          console.warn(`[processCharacters] Character ${index} has null/undefined firstName:`, char);
+          return false;
+        }
+
+        if (char.lastName === null || char.lastName === undefined) {
+          console.warn(`[processCharacters] Character ${index} has null/undefined lastName:`, char);
+          return false;
+        }
+
+        const isValid = isValidCharacter(char);
+        return isValid;
+      } catch (error) {
+        console.error(`[processCharacters] Error processing character at index ${index}:`, error, char);
         return false;
       }
-
-      const isValid = isValidCharacter(char);
-      
-      if (!isValid) {
-        console.warn(`[processCharacters] Invalid character at index ${index}:`, {
-          id: char.id,
-          firstName: char.firstName,
-          lastName: char.lastName,
-          userId: char.userId,
-          issues: {
-            hasValidId: typeof char.id === 'number' && char.id > 0,
-            hasValidFirstName: typeof char.firstName === 'string' && char.firstName?.trim() !== '',
-            hasValidLastName: typeof char.lastName === 'string' && char.lastName?.trim() !== '',
-            hasValidUserId: typeof char.userId === 'number' && char.userId > 0
-          }
-        });
-      }
-      return isValid;
     });
 
     console.log(`[processCharacters] Processed ${validCharacters.length} valid characters from ${charactersArray.length} total`);

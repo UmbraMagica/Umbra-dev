@@ -70,34 +70,52 @@ function validateAndFilterCharacters(characters: any[]): any[] {
   }
 
   return characters.filter((char, index) => {
-    if (!char || typeof char !== 'object') {
-      console.warn(`[validateAndFilterCharacters] Invalid character object ${index}:`, char);
+    try {
+      if (!char || typeof char !== 'object') {
+        console.warn(`[validateAndFilterCharacters] Invalid character object ${index}:`, char);
+        return false;
+      }
+
+      // Extra null/undefined checks for critical string fields
+      if (char.firstName === null || char.firstName === undefined) {
+        console.warn(`[validateAndFilterCharacters] Character ${index} has null/undefined firstName`);
+        return false;
+      }
+
+      if (char.lastName === null || char.lastName === undefined) {
+        console.warn(`[validateAndFilterCharacters] Character ${index} has null/undefined lastName`);
+        return false;
+      }
+
+      const hasValidId = typeof char.id === 'number' && char.id > 0;
+      const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
+      const hasValidLastName = typeof char.lastName === 'string' && char.lastName.trim() !== '';
+      const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
+
+      const isValid = hasValidId && hasValidFirstName && hasValidLastName && hasValidUserId;
+
+      if (!isValid) {
+        console.warn(`[validateAndFilterCharacters] Invalid character ${index} filtered out:`, {
+          id: char.id,
+          firstName: char.firstName,
+          lastName: char.lastName,
+          userId: char.userId,
+          firstNameType: typeof char.firstName,
+          lastNameType: typeof char.lastName,
+          issues: {
+            invalidId: !hasValidId,
+            invalidFirstName: !hasValidFirstName,
+            invalidLastName: !hasValidLastName,
+            invalidUserId: !hasValidUserId
+          }
+        });
+      }
+
+      return isValid;
+    } catch (error) {
+      console.error(`[validateAndFilterCharacters] Error validating character ${index}:`, error, char);
       return false;
     }
-
-    const hasValidId = typeof char.id === 'number' && char.id > 0;
-    const hasValidFirstName = typeof char.firstName === 'string' && char.firstName?.trim() !== '';
-    const hasValidLastName = typeof char.lastName === 'string' && char.lastName?.trim() !== '';
-    const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
-
-    const isValid = hasValidId && hasValidFirstName && hasValidLastName && hasValidUserId;
-
-    if (!isValid) {
-      console.warn(`[validateAndFilterCharacters] Invalid character ${index} filtered out:`, {
-        id: char.id,
-        firstName: char.firstName,
-        lastName: char.lastName,
-        userId: char.userId,
-        issues: {
-          invalidId: !hasValidId,
-          invalidFirstName: !hasValidFirstName,
-          invalidLastName: !hasValidLastName,
-          invalidUserId: !hasValidUserId
-        }
-      });
-    }
-
-    return isValid;
   });
 }
 

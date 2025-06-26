@@ -22,11 +22,20 @@ export function CharacterAvatar({ character, size = "md", className }: Character
   const getInitials = () => {
     if (!character) return "?";
 
-    const firstName = character.firstName?.trim() || "";
-    const lastName = character.lastName?.trim() || "";
+    // Ensure we have string values before calling charAt
+    const firstName = character.firstName;
+    const lastName = character.lastName;
 
-    const first = firstName.charAt(0) || "";
-    const last = lastName.charAt(0) || "";
+    if (!firstName || typeof firstName !== 'string') return "?";
+    if (!lastName || typeof lastName !== 'string') return "?";
+
+    const firstTrimmed = firstName.trim();
+    const lastTrimmed = lastName.trim();
+
+    if (!firstTrimmed || !lastTrimmed) return "?";
+
+    const first = firstTrimmed.charAt(0) || "";
+    const last = lastTrimmed.charAt(0) || "";
 
     const initials = (first + last).toUpperCase();
     return initials || "?";
