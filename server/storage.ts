@@ -1348,18 +1348,6 @@ export class DatabaseStorage implements IStorage {
     return !error;
   }
 
-  async markInviteCodeUsed(id: number): Promise<void> {
-    const { error } = await supabase
-      .from('invite_codes')
-      .update({ 
-        is_used: true,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id);
-
-    if (error) throw new Error(`Failed to mark invite code as used: ${error.message}`);
-  }
-
   async initializeDefaultSpells(): Promise<void> {
     const defaultSpells = [
       {
@@ -2321,95 +2309,60 @@ export class DatabaseStorage implements IStorage {
     return data;
   }
 
-  async markInviteCodeUsed(inviteCodeId: number): Promise<void> {
-    const { error } = await supabase
-      .from("invite_codes")
-      .update({ 
-        is_used: true,
-        used_at: new Date().toISOString()
-      })
-      .eq("id", inviteCodeId);
-
-    if (error) {
-      console.error("Error marking invite code as used:", error);
-      throw error;
+  async useInviteCode(code: string, userId: number): Promise<boolean> {
+    const { data: invite, error } = await supabase
+      .from('invite_codes')
+      .select('*')
+      .eq('code', code)
+      .single();
+    if (error || !invite) {
+      console.error('useInviteCode: Invite code not found', { code, error });
+      return false;
     }
+    if (invite.is_used) {
+      console.warn('useInviteCode: Invite code already used', { code });
+      return false;
+    }
+    const { error: updateError } = await supabase
+      .from('invite_codes')
+      .update({
+        is_used: true,
+        used_at: new Date().toISOString(),
+        used_by: userId
+      })
+      .eq('id', invite.id);
+    if (updateError) {
+      console.error('useInviteCode: Failed to mark as used', { code, updateError });
+      return false;
+    }
+    return true;
   }
 
-  async createCharacter(characterData: {
-    userId: number;
-    firstName: string;
-    middleName?: string | null;
-    lastName: string;
-    birthDate: string;
-    isActive?: boolean;
-    isSystem?: boolean;
-    showHistoryToOthers?: boolean;
-  }): Promise<any> {
+  async getAllInviteCodes(): Promise<any[]> {
+    const { data, error } = await supabase.from('invite_codes').select('*');
+    if (error) {
+      console.error('getAllInviteCodes: Error fetching invite codes', error);
+      return [];
+    }
+    return data || [];
+  }
+
+  async createInviteCode(codeObj: { code: string }): Promise<any> {
     const { data, error } = await supabase
-      .from("characters")
+      .from('invite_codes')
       .insert({
-        user_id: characterData.userId,
-        first_name: characterData.firstName,
-        middle_name: characterData.middleName || null,
-        last_name: characterData.lastName,
-        birth_date: characterData.birthDate,
-        is_active: characterData.isActive ?? true,
-        is_system: characterData.isSystem ?? false,
-        show_history_to_others: characterData.showHistoryToOthers ?? true
+        code: codeObj.code,
+        is_used: false,
+        used_at: null,
+        used_by: null
       })
       .select()
       .single();
-
     if (error) {
-      console.error("Error creating character:", error);
+      console.error('createInviteCode: Error creating invite code', error);
       throw error;
     }
-
     return data;
-  }
-
-  async getCharactersInChatRooms(): Promise<any[]> {
-    // Get characters currently present in chat rooms via room presence
-    const { data, error } = await supabase
-      .from("room_presence")
-      .select(`
-        character_id,
-        room_id,
-        characters!inner (
-          id,
-          first_name,
-          middle_name,
-          last_name,
-          death_date,
-          is_system,
-          avatar
-        ),
-        chat_rooms!inner (
-          id,
-          name
-        )
-      `)
-      .is("characters.death_date", null)
-      .eq("characters.is_system", false);
-
-    if (error) {
-      console.error("Error fetching characters in chat rooms:", error);
-      return [];
-    }
-
-    // Transform the data to match expected format
-    const onlineCharacters = (data || []).map((item: any) => ({
-      id: item.characters.id,
-      firstName: item.characters.first_name,
-      middleName: item.characters.middle_name,
-      lastName: item.characters.last_name,
-      avatar: item.characters.avatar,
-      roomId: item.room_id,
-      roomName: item.chat_rooms.name
-    }));
-
-    return onlineCharacters;
   }
 }
 

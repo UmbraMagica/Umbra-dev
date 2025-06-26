@@ -277,8 +277,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       console.log('[DEBUG] User created successfully:', newUser.id);
 
       // Mark invite code as used
-      console.log('[DEBUG] Marking invite code as used:', inviteCodeData.id);
-      await storage.markInviteCodeUsed(inviteCodeData.id);
+      console.log('[DEBUG] Marking invite code as used:', inviteCodeData.code);
+      const inviteUsed = await storage.useInviteCode(inviteCodeData.code, newUser.id);
+      if (!inviteUsed) {
+        throw new Error('Failed to mark invite code as used');
+      }
 
       // Create character via storage system
       console.log('[DEBUG] Creating character for user:', newUser.id);
