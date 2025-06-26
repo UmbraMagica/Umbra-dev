@@ -1,0 +1,31 @@
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Is array: false
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-CDEOI6nq.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-CDEOI6nq.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-CDEOI6nq.js:491 Uncaught TypeError: Cannot read properties of undefined (reading 'charAt')
+    at mn (index-CDEOI6nq.js:491:3595)
+    at vg (index-CDEOI6nq.js:48:34152)
+    at Ox (index-CDEOI6nq.js:48:62028)
+    at P1 (index-CDEOI6nq.js:48:72485)
+    at iS (index-CDEOI6nq.js:48:106413)
+    at v4 (index-CDEOI6nq.js:48:105476)
+    at xp (index-CDEOI6nq.js:48:105306)
+    at sS (index-CDEOI6nq.js:48:102428)
+    at l0 (index-CDEOI6nq.js:48:113881)
+    at mu (index-CDEOI6nq.js:48:112471)
