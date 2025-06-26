@@ -323,7 +323,7 @@ export default function Home() {
               <Button 
                 variant="ghost" 
                 className="w-full justify-start text-foreground hover:text-accent" 
-                onClick={()={() => {
+                onClick={() => {
                   setLocation('/settings');
                   setIsMenuOpen(false);
                 }}
@@ -335,7 +335,7 @@ export default function Home() {
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start text-amber-400 hover:text-amber-300 hover:bg-amber-400/10" 
-                  onClick={()={() => {
+                  onClick={() => {
                     setLocation('/admin');
                     setIsMenuOpen(false);
                   }}
