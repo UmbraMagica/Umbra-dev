@@ -262,7 +262,25 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
+  async createUser(user: InsertUser): Promise<User> {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const { data, error } = await supabase
+      .from("users")
+      .insert({
+        username: user.username,
+        email: user.email,
+        password: hashedPassword,
+        role: user.role || 'user'
+      })
+      .select()
+      .single();
 
+    if (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+    return toCamel(data);
+  }
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').update({ role, updated_at: new Date() }).eq('id', id).select().single();
@@ -723,62 +741,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Authentication and invite codes remain same...
-  async getInviteCode(code: string): Promise<InviteCode | undefined> {
-    const { data, error } = await supabase.from('invite_codes').select('*').eq('code', code).single();
-    if (error) return undefined;
-    return data;
-  }
-
-  async getAllInviteCodes(): Promise<InviteCode[]> {
-    const { data, error } = await supabase.from('invite_codes').select('*').order('created_at', { ascending: false });
-    if (error) return [];
-    return toCamel(data || []);
-  }
-
-  async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
-    const { data, error } = await supabase
-      .from('invite_codes')
-      .insert([insertInviteCode])
-      .select()
-      .single();
-
-    if (error) throw new Error(error.message);
-    if (!data) throw new Error("Insert returned no data.");
-
-    return data;
-  }
-
-  async validateInviteCode(code: string) {
-    const { data, error} = await supabase
-      .from('invite_codes')
-      .select('*')
-      .eq('code', code)
-      .eq('is_used', false)
-      .single()
-
-    if (error || !data) {
-      return { valid: false, message: "Invalid or already used invite code" };
-    }
-
-    return { valid: true, data };
-  }
-
-  async markInviteCodeAsUsed(code: string) {
-    const { error } = await supabase
-      .from('invite_codes')
-      .update({ 
-        is_used: true,
-        updated_at: new Date().toISOString()
-      })
-      .eq('code', code)
-
-    if (error) throw error;
-  }
-
-  async useInviteCode(code: string, userId: number): Promise<boolean> {
-    const { error } = await supabase.from('invite_codes').update({ isUsed: true, usedBy: userId, usedAt: new Date() }).eq('code', code);
-    return !error;
-  }
 
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.getUserByUsername(username);
@@ -1386,7 +1348,6 @@ export class DatabaseStorage implements IStorage {
     return !error;
   }
 
-  // Mark invite code as used
   async markInviteCodeUsed(id: number): Promise<void> {
     const { error } = await supabase
       .from('invite_codes')
@@ -1399,7 +1360,6 @@ export class DatabaseStorage implements IStorage {
     if (error) throw new Error(`Failed to mark invite code as used: ${error.message}`);
   }
 
-  // Initialize default spells for all characters
   async initializeDefaultSpells(): Promise<void> {
     const defaultSpells = [
       {
@@ -1898,9 +1858,6 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // ... existující kód ...
-
-  // ... existující kód ...
   async assignHousingAdminToSystemUser() {
     // Najdi postavu Správa ubytování
     const { data: character } = await supabase.from('characters').select('*').eq('firstName', 'Správa').eq('lastName', 'ubytování').single();
@@ -2319,7 +2276,6 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Přidání předmětu do inventáře včetně ceny
   async addItemToInventory(
     characterId: number,
     itemType: string,
@@ -2348,10 +2304,113 @@ export class DatabaseStorage implements IStorage {
       .single();
 
     if (error) throw error;
+  }
+
+  async getInviteCode(code: string): Promise<any> {
+    const { data, error } = await supabase
+      .from("invite_codes")
+      .select("*")
+      .eq("code", code)
+      .single();
+
+    if (error) {
+      console.error("Error fetching invite code:", error);
+      return null;
+    }
+
     return data;
   }
 
+  async markInviteCodeUsed(inviteCodeId: number): Promise<void> {
+    const { error } = await supabase
+      .from("invite_codes")
+      .update({ 
+        is_used: true,
+        used_at: new Date().toISOString()
+      })
+      .eq("id", inviteCodeId);
 
+    if (error) {
+      console.error("Error marking invite code as used:", error);
+      throw error;
+    }
+  }
+
+  async createCharacter(characterData: {
+    userId: number;
+    firstName: string;
+    middleName?: string | null;
+    lastName: string;
+    birthDate: string;
+    isActive?: boolean;
+    isSystem?: boolean;
+    showHistoryToOthers?: boolean;
+  }): Promise<any> {
+    const { data, error } = await supabase
+      .from("characters")
+      .insert({
+        user_id: characterData.userId,
+        first_name: characterData.firstName,
+        middle_name: characterData.middleName || null,
+        last_name: characterData.lastName,
+        birth_date: characterData.birthDate,
+        is_active: characterData.isActive ?? true,
+        is_system: characterData.isSystem ?? false,
+        show_history_to_others: characterData.showHistoryToOthers ?? true
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating character:", error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async getCharactersInChatRooms(): Promise<any[]> {
+    // Get characters currently present in chat rooms via room presence
+    const { data, error } = await supabase
+      .from("room_presence")
+      .select(`
+        character_id,
+        room_id,
+        characters!inner (
+          id,
+          first_name,
+          middle_name,
+          last_name,
+          death_date,
+          is_system,
+          avatar
+        ),
+        chat_rooms!inner (
+          id,
+          name
+        )
+      `)
+      .is("characters.death_date", null)
+      .eq("characters.is_system", false);
+
+    if (error) {
+      console.error("Error fetching characters in chat rooms:", error);
+      return [];
+    }
+
+    // Transform the data to match expected format
+    const onlineCharacters = (data || []).map((item: any) => ({
+      id: item.characters.id,
+      firstName: item.characters.first_name,
+      middleName: item.characters.middle_name,
+      lastName: item.characters.last_name,
+      avatar: item.characters.avatar,
+      roomId: item.room_id,
+      roomName: item.chat_rooms.name
+    }));
+
+    return onlineCharacters;
+  }
 }
 
 export const storage = new DatabaseStorage();
