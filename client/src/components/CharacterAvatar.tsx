@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Character {
   id: number;
@@ -23,18 +24,12 @@ interface CharacterAvatarProps {
 }
 
 const sizeClasses = {
-  xs: "h-6 w-6 text-xs",
-  sm: "h-8 w-8 text-sm", 
-  md: "h-10 w-10 text-base",
-  lg: "h-12 w-12 text-lg"
+  sm: "h-8 w-8 text-xs",
+  md: "h-12 w-12 text-sm",
+  lg: "h-16 w-16 text-base"
 };
 
 export function CharacterAvatar({ character, size = "md", className }: CharacterAvatarProps) {
-  const sizeClasses = {
-    sm: "h-8 w-8 text-xs",
-    md: "h-12 w-12 text-sm",
-    lg: "h-16 w-16 text-base"
-  };
 
   // Bezpečné získání jména s kontrolou na null/undefined
   const firstName = character.firstName || '';
