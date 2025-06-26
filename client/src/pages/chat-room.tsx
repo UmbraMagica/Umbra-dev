@@ -698,6 +698,32 @@ export default function ChatRoom() {
     });
   }, [messages]);
 
+  // Přítomnost v místnosti (room_presence)
+  useEffect(() => {
+    if (!selectedCharacter || !selectedCharacter.id || !currentRoomId) return;
+    const token = localStorage.getItem('jwt_token');
+    // Vstup do místnosti
+    fetch(`${API_URL}/api/room-presence/join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ characterId: selectedCharacter.id, roomId: currentRoomId })
+    });
+    // Odchod z místnosti při unmountu nebo změně místnosti/postavy
+    return () => {
+      fetch(`${API_URL}/api/room-presence/leave`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ characterId: selectedCharacter.id, roomId: currentRoomId })
+      });
+    };
+  }, [selectedCharacter, currentRoomId]);
+
   // Loading states
   if (authLoading || roomsLoading || messagesLoading) {
     return (
