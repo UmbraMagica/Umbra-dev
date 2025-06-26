@@ -233,7 +233,7 @@ export default function CharacterProfile() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(`/character/edit?characterId=${character.id}`)}
+                        onClick={() => setLocation('/character-edit')}
                         className="flex items-center gap-2"
                       >
                         <Edit3 className="h-4 w-4" />
