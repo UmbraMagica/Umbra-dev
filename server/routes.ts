@@ -634,15 +634,32 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       const validOnlineCharacters = activeCharacters
         .filter((char: any) => {
+          // Extra safety checks for null/undefined values
+          if (!char || typeof char !== 'object') {
+            console.warn("[ONLINE] Invalid character object:", char);
+            return false;
+          }
+
+          const firstName = char.firstName;
+          const lastName = char.lastName;
+
+          if (firstName === null || firstName === undefined || lastName === null || lastName === undefined) {
+            console.warn("[ONLINE] Character has null/undefined name fields:", {
+              id: char.id,
+              firstName,
+              lastName
+            });
+            return false;
+          }
+
           // Filter out invalid characters
-          return char && 
-                 char.id && 
-                 char.firstName && 
-                 char.lastName && 
-                 typeof char.firstName === 'string' && 
-                 typeof char.lastName === 'string' &&
-                 char.firstName.trim() !== '' &&
-                 char.lastName.trim() !== '' &&
+          return char.id && 
+                 firstName && 
+                 lastName && 
+                 typeof firstName === 'string' && 
+                 typeof lastName === 'string' &&
+                 firstName.trim() !== '' &&
+                 lastName.trim() !== '' &&
                  !char.deathDate &&
                  !char.isSystem;
         })

@@ -149,7 +149,7 @@ export function useAuth() {
 
             // Backend vrací { characters: [...] }, takže extrahujme přímo characters array
             const charactersArray = charactersData?.characters || charactersData || [];
-            
+
             userData.characters = processCharacters(charactersArray);
           } else {
             console.warn('[useAuth] Failed to fetch characters, status:', charactersResponse.status);
@@ -195,7 +195,7 @@ export function useAuth() {
           localStorage.removeItem(key);
         }
       });
-      
+
       queryClient.setQueryData(['/api/auth/user'], data);
       setLocation("/");
     },
@@ -230,7 +230,7 @@ export function useAuth() {
     onSuccess: (data) => {
       // Clear any existing selectedCharacterId to prevent wrong character selection
       localStorage.removeItem('selectedCharacterId');
-      
+
       queryClient.setQueryData(['/api/auth/user'], data);
       queryClient.invalidateQueries();
       setLocation("/");
