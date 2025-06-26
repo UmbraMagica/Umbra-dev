@@ -2149,4 +2149,43 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Failed to fetch chat messages" });
     }
   });
+
+  // --- ROOM PRESENCE ENDPOINTS ---
+  app.post('/api/room-presence/join', requireAuth, async (req, res) => {
+    const { characterId, roomId } = req.body;
+    if (!characterId || !roomId) {
+      return res.status(400).json({ message: 'Chybí characterId nebo roomId' });
+    }
+    const { error } = await supabase
+      .from('room_presence')
+      .upsert([
+        {
+          character_id: characterId,
+          room_id: roomId,
+          is_online: true,
+          last_active_at: new Date().toISOString(),
+          joined_at: new Date().toISOString()
+        }
+      ], { onConflict: ['character_id', 'room_id'] });
+    if (error) {
+      return res.status(500).json({ message: 'Chyba při zápisu přítomnosti', error });
+    }
+    res.json({ success: true });
+  });
+
+  app.post('/api/room-presence/leave', requireAuth, async (req, res) => {
+    const { characterId, roomId } = req.body;
+    if (!characterId || !roomId) {
+      return res.status(400).json({ message: 'Chybí characterId nebo roomId' });
+    }
+    const { error } = await supabase
+      .from('room_presence')
+      .update({ is_online: false, last_active_at: new Date().toISOString() })
+      .eq('character_id', characterId)
+      .eq('room_id', roomId);
+    if (error) {
+      return res.status(500).json({ message: 'Chyba při odchodu z místnosti', error });
+    }
+    res.json({ success: true });
+  });
 }
