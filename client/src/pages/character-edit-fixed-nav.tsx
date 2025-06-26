@@ -75,18 +75,23 @@ export default function CharacterEditFixedNav() {
   const getSelectedCharacter = () => {
     if (isAdminContext && urlCharacterId) {
       // In admin context, use character from URL
-      return (allCharacters as any[])?.find((c: any) => c.id === urlCharacterId);
+      if (Array.isArray(allCharacters)) {
+        return allCharacters.find((c: any) => c.id === urlCharacterId);
+      } else {
+        return null;
+      }
     }
-    
     // In user context, use selected character from localStorage
     const selectedCharacterId = localStorage.getItem('selectedCharacterId');
-    if (selectedCharacterId && userCharacters) {
-      const selectedChar = (userCharacters as any[])?.find((c: any) => c.id === parseInt(selectedCharacterId));
+    if (selectedCharacterId && Array.isArray(userCharacters)) {
+      const selectedChar = userCharacters.find((c: any) => c.id === parseInt(selectedCharacterId));
       if (selectedChar) return selectedChar;
     }
-    
     // Fallback to first alive character or first character
-    return (userCharacters as any[])?.find((c: any) => !c.deathDate) || (userCharacters as any[])?.[0];
+    if (Array.isArray(userCharacters)) {
+      return userCharacters.find((c: any) => !c.deathDate) || userCharacters[0];
+    }
+    return null;
   };
 
   const primaryCharacter = getSelectedCharacter();
@@ -207,12 +212,12 @@ export default function CharacterEditFixedNav() {
     })();
   }, [characterId]);
 
-  if (loading || !character) {
+  if (loading || !primaryCharacter) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Načítání postavy...</p>
+          <p className="text-muted-foreground">Načítání postavy nebo žádná postava nenalezena...</p>
         </div>
       </div>
     );
