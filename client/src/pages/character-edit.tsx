@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -147,6 +146,11 @@ export default function CharacterEdit() {
   const hasAccess = user?.role === 'admin' || 
     userCharacters.some((char: any) => char.id === Number(characterId) && char.userId === user?.id);
 
+  // Před návratovou hodnotu přidej pomocné proměnné:
+  const isAdmin = user?.role === 'admin';
+  const isSchoolEditable = isAdmin || !character?.school;
+  const isHeightEditable = isAdmin || !character?.height;
+
   if (!user) {
     return <div>Přihlašte se prosím</div>;
   }
@@ -226,6 +230,7 @@ export default function CharacterEdit() {
                       value={formData.firstName}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
                       required
+                      disabled={!isAdmin}
                     />
                   </div>
                   <div>
@@ -235,6 +240,7 @@ export default function CharacterEdit() {
                       value={formData.lastName}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
                       required
+                      disabled={!isAdmin}
                     />
                   </div>
                 </div>
@@ -245,6 +251,7 @@ export default function CharacterEdit() {
                     id="middleName"
                     value={formData.middleName}
                     onChange={(e) => handleInputChange('middleName', e.target.value)}
+                    disabled={!isAdmin}
                   />
                 </div>
 
@@ -256,6 +263,7 @@ export default function CharacterEdit() {
                     value={formData.birthDate}
                     onChange={(e) => handleInputChange('birthDate', e.target.value)}
                     required
+                    disabled={!isAdmin}
                   />
                 </div>
 
@@ -264,6 +272,7 @@ export default function CharacterEdit() {
                   <Select
                     value={formData.school}
                     onValueChange={(value) => handleInputChange('school', value)}
+                    disabled={!isSchoolEditable}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -305,6 +314,7 @@ export default function CharacterEdit() {
                       onChange={(e) => handleInputChange('height', e.target.value)}
                       min="50"
                       max="250"
+                      disabled={!isHeightEditable}
                     />
                   </div>
                   <div>
