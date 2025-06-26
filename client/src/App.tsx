@@ -25,6 +25,7 @@ import CharacterHistory from "@/pages/character-history";
 import CharacterInventory from "@/pages/character-inventory";
 import CharacterJournal from "@/pages/character-journal";
 import CharacterSpells from "@/pages/character-spells";
+import CharacterEdit from "./pages/character-edit";
 import MySpells from "@/pages/my-spells";
 import UserSettings from "@/pages/user-settings";
 import Cemetery from "@/pages/cemetery";
@@ -88,6 +89,7 @@ function Router() {
             <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
             <Route path="/characters/:characterId/journal" component={CharacterJournal} />
             <Route path="/characters/:id/spells" component={CharacterSpells} />
+            <Route path="/character-edit" component={CharacterEdit} />
             <Route path="/my-spells" component={MySpells} />
             <Route path="/cemetery" component={Cemetery} />
             <Route path="/ollivanders" component={Ollivanders} />

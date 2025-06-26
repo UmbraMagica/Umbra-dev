@@ -894,7 +894,7 @@ export default function Home() {
                             onClick={(e) => {
                               e.stopPropagation();
                               localStorage.setItem('selectedCharacterId', character.id.toString());
-                              setLocation("/character/edit");
+                              setLocation("/character-edit");
                             }}
                             className="text-muted-foreground hover:text-foreground ml-2"
                           >

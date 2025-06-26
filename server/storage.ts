@@ -785,7 +785,8 @@ export class DatabaseStorage implements IStorage {
     console.log('validateUser - user:', user);
     if (!user) return null;
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword```tool_code
+ = await bcrypt.compare(password, user.password);
     console.log('validateUser - isValidPassword:', isValidPassword, 'hash:', user.password, 'input:', password);
     return isValidPassword ? user : null;
   }
@@ -1242,20 +1243,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActiveCharacters(): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('characters')
-      .select('*')
-      .eq('is_active', true)
-      .is('death_date', null)
-      .eq('is_system', false)
-      .order('first_name');
+    try {
+      const { data, error } = await supabase
+        .from('characters')
+        .select('*')
+        .eq('is_active', true)
+        .is('death_date', null)
+        .not('first_name', 'is', null)
+        .not('last_name', 'is', null)
+        .neq('first_name', '')
+        .neq('last_name', '');
 
-    if (error) {
-      console.error("Error fetching active characters:", error);
-      throw error;
+      if (error) {
+        console.error('Database error in getActiveCharacters:', error);
+        throw error;
+      }
+
+      if (!data || !Array.isArray(data)) {
+        console.warn('getActiveCharacters: No data or invalid format');
+        return [];
+      }
+
+      // Transform to consistent format
+      const transformedCharacters = data.map((char: any) => ({
+        id: char.id,
+        userId: char.user_id,
+        firstName: char.first_name,
+        middleName: char.middle_name,
+        lastName: char.last_name,
+        birthDate: char.birth_date,
+        isActive: char.is_active,
+        isSystem: char.is_system || false,
+        deathDate: char.death_date,
+        avatar: char.avatar
+      }));
+
+      console.log(`[getActiveCharacters] Returning ${transformedCharacters.length} active characters`);
+      return transformedCharacters;
+    } catch (error) {
+      console.error('Error getting active characters:', error);
+      return [];
     }
-
-    return data || [];
   }
 
   // Spell operations

@@ -624,20 +624,40 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Seznam online postav
   app.get("/api/characters/online", requireAuth, async (_req, res) => {
     try {
-      // Pro demonstraci vraťme alespoň aktivní postavy
-      // V budoucnu můžeme implementovat skutečný tracking přítomnosti
+      // Pro demonstraci vraťme alespoň aktivní postavy s validními daty
       const activeCharacters = await storage.getActiveCharacters();
       
-      const onlineCharacters = activeCharacters.map((char: any) => ({
-        id: char.id,
-        fullName: `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`,
-        firstName: char.firstName,
-        lastName: char.lastName,
-        location: "Hlavní hala", // Placeholder
-        avatar: char.avatar
-      }));
+      if (!activeCharacters || !Array.isArray(activeCharacters)) {
+        console.warn("No active characters or invalid format");
+        return res.json([]);
+      }
+
+      const validOnlineCharacters = activeCharacters
+        .filter((char: any) => {
+          // Filter out invalid characters
+          return char && 
+                 char.id && 
+                 char.firstName && 
+                 char.lastName && 
+                 typeof char.firstName === 'string' && 
+                 typeof char.lastName === 'string' &&
+                 char.firstName.trim() !== '' &&
+                 char.lastName.trim() !== '' &&
+                 !char.deathDate &&
+                 !char.isSystem;
+        })
+        .map((char: any) => ({
+          id: char.id,
+          fullName: `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`,
+          firstName: char.firstName,
+          middleName: char.middleName || null,
+          lastName: char.lastName,
+          location: "Hlavní hala", // Placeholder
+          avatar: char.avatar || null
+        }));
       
-      res.json(onlineCharacters);
+      console.log(`[ONLINE] Returning ${validOnlineCharacters.length} valid online characters`);
+      res.json(validOnlineCharacters);
     } catch (error) {
       console.error("Error fetching online characters:", error);
       res.json([]);
