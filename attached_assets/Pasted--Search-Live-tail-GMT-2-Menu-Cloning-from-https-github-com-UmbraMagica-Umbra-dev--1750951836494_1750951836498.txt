@@ -1,0 +1,62 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+==> Cloning from https://github.com/UmbraMagica/Umbra-dev
+==> Checking out commit 920eac5b0d8b5f814684b55c92b8aeed6e991d57 in branch main
+==> Using Node.js version 22.16.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a Bun version: https://render.com/docs/bun-version
+==> Running build command '   npm install && npm run build'...
+added 559 packages, and audited 560 packages in 9s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> npm run build:client && npm run postbuild:client && npm run build:server
+> umbra-magica@1.0.0 build:client
+> cd client && npm install && npm run build
+added 237 packages, and audited 238 packages in 4s
+43 packages are looking for funding
+  run `npm fund` for details
+3 vulnerabilities (1 low, 2 moderate)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> client@1.0.0 build
+> vite build
+The CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.2.10 building for production...
+transforming...
+✓ 2737 modules transformed.
+x Build failed in 3.68s
+error during build:
+RollupError: src/App.tsx (28:7): "default" is not exported by "src/pages/character-edit.tsx", imported by "src/App.tsx".
+file: /opt/render/project/src/client/src/App.tsx:28:7
+26: import CharacterJournal from "@/pages/character-journal";
+27: import CharacterSpells from "@/pages/character-spells";
+28: import CharacterEdit from "./pages/character-edit";
+           ^
+29: import MySpells from "@/pages/my-spells";
+30: import UserSettings from "@/pages/user-settings";
+    at getRollupError (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:16807:16)
+    at Module.traceVariable (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:17256:29)
+    at ModuleScope.findVariable (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:14909:39)
+    at FunctionScope.findVariable (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:5633:38)
+    at FunctionBodyScope.findVariable (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:5633:38)
+    at Identifier.bind (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:5407:40)
+    at Property.bind (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:2798:23)
+    at ObjectExpression.bind (file:///opt/render/project/src/client/node_modules/rollup/dist/es/shared/node-entry.js:2794:28)
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
