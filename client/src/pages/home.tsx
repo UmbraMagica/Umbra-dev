@@ -810,15 +810,6 @@ export default function Home() {
                       <User className="text-accent mr-3 h-5 w-5" />
                       Moje postava
                     </h3>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setLocation(`/character/edit?characterId=${selectedCharacter.id}`)}
-                      className="text-muted-foreground hover:text-foreground"
-                      disabled={!selectedCharacter?.id}
-                    >
-                      <Settings className="h-4 w-4" />
-                    </Button>
                   </div>
                   <div className="text-center">
                     <div className="mx-auto mb-3 flex justify-center">
