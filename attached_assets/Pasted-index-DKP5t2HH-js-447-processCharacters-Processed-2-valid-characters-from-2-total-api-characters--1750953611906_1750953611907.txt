@@ -1,0 +1,97 @@
+index-DKP5t2HH.js:447 [processCharacters] Processed 2 valid characters from 2 total
+api/characters/online:1  Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+api/characters/online:1  Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+api/characters/online:1  Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+index-DKP5t2HH.js:500 [Ollivanders] Načteno allCharacters: Object
+index-DKP5t2HH.js:500 [Ollivanders] Načteno userCharacters: Array(0)
+index-DKP5t2HH.js:500 [Ollivanders] Načítám hůlku pro postavu: 6
+index-DKP5t2HH.js:500 [Ollivanders] Načteno userCharacters: Array(0)
+index-DKP5t2HH.js:500 [Ollivanders] Načteno userCharacters: Array(0)
+index-DKP5t2HH.js:500 [Ollivanders] Načteny wandComponents: Object
+api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+index-DKP5t2HH.js:491 Admin button clicked
+api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Failed to fetch online characters
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async index-DKP5t2HH.js:57:44762
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Failed to fetch online characters","characters":[]}
+index-DKP5t2HH.js:447 Landing component rendered
+index-DKP5t2HH.js:447 Login function: function
+index-DKP5t2HH.js:447 isLoginPending: false
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/auth/register:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Registration failed
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async Ke (index-DKP5t2HH.js:57:44551)
+    at async Object.mutationFn (index-DKP5t2HH.js:447:65602)
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Registration failed","error":"storage.createUser is not a function"}
+api/auth/register:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-DKP5t2HH.js:57 API Error Response: Object
+index-DKP5t2HH.js:57 JSON Parse Error: Error: Registration failed
+    at ak (index-DKP5t2HH.js:57:44028)
+    at async Ke (index-DKP5t2HH.js:57:44551)
+    at async Object.mutationFn (index-DKP5t2HH.js:447:65602)
+index-DKP5t2HH.js:57 Error Response Text: {"message":"Registration failed","error":"storage.createUser is not a function"}

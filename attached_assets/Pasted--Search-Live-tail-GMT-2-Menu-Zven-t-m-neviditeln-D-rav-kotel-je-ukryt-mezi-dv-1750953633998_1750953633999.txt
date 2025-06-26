@@ -1,0 +1,357 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+      'Zvenčí téměř neviditelný, Děravý kotel je ukryt mezi dvěma obchody na Charing Cross Road, nenápadný a zapomenutý těmi, kdo nemají magický cit. Zchátralá cihlová fasáda vypadá jako prázdný dům – jen lehce pokřivený vývěsní štít s nápisem „The Leaky Cauldron" se zaleskne tomu, kdo ví, kam se dívat.\r\n' +
+      '\r\n' +
+      'Uvnitř však dýchá jiný svět. Hostinec je starý, lehce zašlý, ale stále živý – spojnice mezi mudlovským Londýnem a Příčnou ulicí.\r\n' +
+      '\r\n' +
+      'Uvnitř je hostinec tmavý a lehce zakouřený, se stěnami obloženými tmavým dřevem, zčernalým od let kouře a kouzel. Kamenná podlaha nese stopy stovek bot, a vzduch je prosycen směsicí kouře, alkoholu a staré magie. Kolem praskajícího krbu postávají cestovatelé, čarodějové v pláštích i podivní samotáři. Masivní bar z leštěného dubu je ošoupaný a zanesený, za nímž barman — Toma si pamatují již minulé generace — nenápadně dohlíží na každého hosta. Místnosti v patře jsou prosté, ale útulné, často s výhledem na tichý dvorek nebo střechy Londýna.\r\n' +
+      '\r\n' +
+      'Na zadním dvorku se nachází prostá omšelá kamenná zeď. Kdo však ví, kterou cihlu zaklepat, otevře průchod na Příčnou ulici. Kouzelnické srdce Londýna.\r\n' +
+      '\r\n' +
+      '[Ulice]',
+    password: null
+  },
+  {
+    id: 22,
+    name: 'Lovci pokladů',
+    description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.',
+    is_public: true,
+    created_at: '2025-06-01T11:10:49.533',
+    category_id: 2,
+    sort_order: 13,
+    long_description: '*„Bohatství nečeká – musíš ho chytit za plášť.“*\r\n' +
+      '\r\n' +
+      'V tmavším koutě Příčné ulice, mezi obchodem s použitými knihami a vývěskou, kde se lámou letáky o záhadně zmizelých, stojí nenápadný, zdánlivě opuštěný dům s rezavou klikou ve tvaru háku. Zvenku připomíná staré skladiště, ale ti, kdo vědí, co hledat, najdou na dřevěném rámu dveří symbol runy „Fehu" – znak štěstí, bohatství… a rizika.\r\n' +
+      '\r\n' +
+      '**Interiér**\r\n' +
+      'Uvnitř se nachází haluzovitý prostor připomínající směs krčmy, kanceláře a černého trhu. Stěny zdobí mapy s vybledlými poznámkami, truhly s pečetěmi, vybledlé fotografie expedic a kusy artefaktů, které vypadají, jako by se ještě hýbaly.\r\n' +
+      '\r\n' +
+      'Za centrálním stolem – odřeným, pokrytým inkoustovými skvrnami a vypálenými značkami – sedí koordinátor: vždy jiný, nikdy stejný. Místnost obklopují vývěsní tabule s úkoly – od banálních donášek a hlídání zásilek, přes hledání ztracených předmětů s magickou hodnotou, až po výpravy za zakázanými relikviemi, které by Ministerstvo nejradši spálilo.\r\n' +
+      '\r\n' +
+      '**Funkce a pověst**\r\n' +
+      'Lovci pokladů nejsou spolek ani cech – jsou to kontakt, síť a příležitost. Každý, kdo má odvahu, může vstoupit, vyslechnout nabídku, ale přežít a získat odměnu dokáže jen ten, kdo ví, kdy má kouzlit – a kdy utéct.\r\n' +
+      '\r\n' +
+      'Obchodníci je považují za špinavce, kouzelníci za zrádce i hrdiny. Ale kdo hledá něco, co nelze najít oficiální cestou, dříve nebo později zamíří sem.\r\n' +
+      '\r\n' +
+      "E'**Pravidla, napsaná rukou, přibitá dýkou ke zdi:**' ,\r\n" +
+      '„Co je nalezeno, to se dělí.“\r\n' +
+      '„Kdo zradí druhého Lovce, víc už se nevrátí.“\r\n' +
+      '„Ministerstvo? Jen další překážka.“\r\n' +
+      '„Zákon se dá obejít, pokud víš, kudy.“',
+    password: null
+  },
+  {
+    id: 9,
+    name: 'Zlomená hůlka',
+    description: 'Obchod s podezřelými kouzelnými předměty',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.933',
+    category_id: 3,
+    sort_order: 14,
+    long_description: '*„Všechno má svou cenu – i to, co by mělo zůstat zakázáno.“*\r\n' +
+      '\r\n' +
+      'Zasunutý do úzkého průchodu mezi dvěma polorozpadlými domy, obchod Stínové relikvie nemá vývěsní štít, jen železné dveře s vrytou lebkou a třemi očima. Uvnitř vládne šero, vzduch je hutný a voní po sušené krvi, kadidlu a prastarém pergamenu. Poličky praskají pod tíhou zakázaných předmětů – láhve s neidentifikovatelnými tekutinami, zrcadla, co šeptají ve spánku, zuby neznámých tvorů, svitky omotané lidskými vlasy i části těl v konzervačních lektvarech.\r\n' +
+      '\r\n' +
+      'Za pultem stojí hubený, vybledlý čaroděj jménem Morwen Szilas, jenž nikdy nemrká a zná cenu duše přesněji než jejího nositele. Kromě zboží nabízí i „služby": vyvolání ducha bez souhlasu, odklon sledování Ministerstva, zakrytí magických stop, prokletí na míru – nebo ticho.\r\n' +
+      '\r\n' +
+      'Obchod je přístupný jen těm, kteří znají správné zaklepání – a ti, co ho popletou, už většinou nikdy nezaklepou znovu.',
+    password: null
+  },
+  {
+    id: 18,
+    name: 'Pošmourná ulička',
+    description: 'Temné zákoutí Obrtlé ulice',
+    is_public: true,
+    created_at: '2025-05-31T20:25:55.518',
+    category_id: 3,
+    sort_order: 15,
+    long_description: null,
+    password: null
+  },
+  {
+    id: 4,
+    name: 'Gringottovi',
+    description: 'Banka pro čaroděje a kouzelníky',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.727',
+    category_id: 2,
+    sort_order: 16,
+    long_description: '*„Nevěř nikomu. Ani sobě. Ale svůj trezor nech u nás.“*\r\n' +
+      '\r\n' +
+      '**Vstupní hala**\r\n' +
+      'Uvnitř návštěvníka pohltí obrovská mramorová hala s vysokým stropem a dlouhou řadou masivních, vyřezávaných stolů, za nimiž sedí skřeti v tmavých hábitech. Vzduch voní pergamenem, olejem a kovem. Hala je tichá, téměř posvátná – každý krok zní dutě a ostré pohledy skřetů proříznou i kouzelnickou sebejistotu.\r\n' +
+      'Po stěnách visí bezpečnostní vývěsky v několika jazycích a výstrahy před podvodníky i artefakty, které „si žijí svým vlastním životem“. Některé dveře jsou střežené nejen runami, ale i subtilními mechanickými systémy, jejichž původ není zcela lidský.\r\n' +
+      '\r\n' +
+      '**Podzemí**\r\n' +
+      'Kovové vozíky se říkají na zakázku – vedou po spletité síti kolejnic, klikatících se v temnotě, hluboko pod zemský povrch. Skřeti je řídí s přesností, s jakou čarodějové kouzlí. Dráhy bývají chráněny nejen fyzickými zámky, ale i magickými iluzemi, labyrinty a poplašnými kouzly. Některé oblasti jsou dnes uzavřeny a „nejsou určeny veřejnosti“ – spekuluje se, že zde skřeti schovávají válečné artefakty nebo staré kletby.\r\n' +
+      'Jednoduché trezory nižších vrstev jsou stísněné, kovové a těsně chráněné magií. Bohatší trezory mají tvar kamenných krypt s vlastní atmosférou a obrannými mechanismy – některé reagují na krev, jiné na magický podpis, jiné prý poznají samotné srdce majitele.\r\n' +
+      'Existují hluboké úrovně, kam se nesmí – podle legend je tam uloženo „Zlato bohů“, zapečetěné relikvie staré magie a poklady, které nesmí být nikdy znovu probuzeny. Skřeti je hlídají mlčky – a žádné otázky nejsou vítané.\r\n' +
+      '\r\n',
+    password: null
+  },
+  {
+    id: 10,
+    name: 'Ministerstvo kouzel',
+    description: 'Úřad kouzelné vlády',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.97',
+    category_id: 4,
+    sort_order: 17,
+    long_description: '"Ne vše, co se třpytí, je kouzelné. A ne vše kouzelné je správné."\r\n' +
+      '\r\n' +
+      'Skryté hluboko pod ulicemi Londýna, přístupné krbem, toaletou či tajnými chodbami v kavárnách, se rozprostírá komplex Ministerstva kouzel – srdce byrokratické moci kouzelnické Británie. V roce 1925 je to místo napětí, tichých dohod a šeptaných intrik – důsledky sílící hrozby z kontinentu jsou cítit v každé dlaždici.\r\n' +
+      '\r\n' +
+      'Vstupní hala\r\n' +
+      'Velkolepá, vysoká jako chrám – s temně zelenými cihlovými stěnami, lesklou černou podlahou a zlatými fontánami magie uprostřed. Lidé sem proudí jako proud myšlenek, přemístění nebo krbem, pod dozorem pracovníků Odboru magického práva.\r\n' +
+      '\r\n' +
+      'Oddělení a kanceláře\r\n' +
+      'Bludiště chodeb a pater – od Odboru záhad, kam vstupují jen ti vyvolení, přes Odbor pro uplatňování kouzelnických zákonů až po kanceláře Regulace magických tvorů. Stěny jsou pokryty pohyblivými nástěnkami, na nichž se objevují vyhlášky, zatykače i falešné zprávy. Vzduch je prosycen vůní pergamenu, vosku a politiky.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešních dnech je Ministerstvo nejen správním centrem, ale i místem strachu a ostražitosti. Byrokraté a bystrozoři se míjejí v temných kuloárech, informace se filtrují, jména mizí ze seznamů. Každý krok je sledován, každý šepot může být zradou.',
+    password: null
+  },
+  {
+    id: 6,
+    name: 'Černá vrána',
+    description: 'Pohřební služba pro kouzelný svět',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.821',
+    category_id: 2,
+    sort_order: 18,
+    long_description: 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána" ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.\r\n' +
+      '\r\n' +
+      'Jakmile zákazník vstoupí, ucítí jemnou vůni vosku, bylin a starého dřeva. Interiér je v přítmí, osvětlovaný pouze světlem svíček, které stojí na masivních kandelábrech rozestavěných po místnosti. Podlahu pokrývají tmavě šedé kamenné dlaždice, občas ozdobené složitými ornamenty v podobě vran a větví. Na levé straně místnosti je dlouhý pult, vyrobený z ebenového dřeva, na němž stojí černá pokladna a několik dekorativních krabiček. Za pultem jsou police plné katalogů, drobných pohřebních artefaktů, vzorků vyřezávaných urn ale i různých pomůcek pro média či snad komunikaci s duchy? Na pravé straně se nachází vitríny, ve kterých jsou vystaveny pohřební dekorace – od honosných pohřebních šperků až po drobné ozdobné lahvičky, do nichž se údajně mohou uchovat vzpomínky. V rohu je pohodlné křeslo s malým stolkem, kde si zákazníci mohou prohlédnout katalogy v soukromí. V zadní části místnosti jsou těžké sametové závěsy, které oddělují hlavní prostor od neveřejných částí podniku. Za pultem stojí - po domluvení schůzky - v černém hábitu Morgause Birchwood - majitelka - a mluví tlumeným, uklidňujícím hlasem. Každé gesto, každý pohyb je promyšlený a důstojný, jako by každý zákazník byl důležitou součástí rituálu. Atmosféra celého prostoru je klidná, téměř posvátná. Zdá se, že místo oplývá jakousi zvláštní magií, která vytváří dojem, že čas uvnitř plyne pomaleji než venku. Za pultem je pak vchod do zadní části obchodu, kde se nacházejí zřejmě sklady a zázemí. A také průchod do sklepa. Ten je vybaven lékařským stolem, několika světly a spoustou roztodivných nástrojů. Inu, někde se k tomu dlouhému odpočinku musí nebožtíci připravit. Nicméně, to není pro oči truchlících, jednoduše… pouze na pozvání paní majitelky. Hodně štěstí.\r\n',
+    password: null
+  },
+  {
+    id: 11,
+    name: 'Nemocnice u sv. Munga',
+    description: 'Nemocnice pro kouzelné nemoci a úrazy',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.037',
+    category_id: 5,
+    sort_order: 19,
+    long_description: '"Léčíme, co se léčit dá – a zbytek alespoň utěšíme."\r\n' +
+      '\r\n' +
+      'Za nenápadnou výlohou starého obchodního domu "Purcell & Syn – obuv pro pány" na londýnské Panské ulici se skrývá jedno z nejdůležitějších míst kouzelnického světa. Vstup je umožněn pouze těm, kdo vědí, že mají poklepat na rozbitou figurínu v rohu výlohy a vyslovit své přání pomoci.\r\n' +
+      '\r\n' +
+      'Exteriér a vstup\r\n' +
+      'Z ulice vypadá budova omšele – výlohy plné prachu, zrezivělé písmo a zapomenuté figuríny. Jen pozorné oko si všimne, že figuríny mění občas postoj… a že výloha klame.\r\n' +
+      '\r\n' +
+      'Hlavní vstupní hala\r\n' +
+      'Po průchodu výlohou se návštěvník ocitne v živé, přesto přísně organizované vstupní hale. Stěny z leštěného dřeva, lavice s výšivkami a velká nástěnná tabule s rozpisem pater, nemocí a pohotovostí. Vzduch je cítit bylinkami, lektvary a něčím nepojmenovatelným, co trochu připomíná rozpuštěné kletby.\r\n' +
+      '\r\n' +
+      'Rozvržení pater\r\n' +
+      'Nemocnice je rozdělena do několika specializovaných oddělení – každé patro se věnuje jiné oblasti:\r\n' +
+      '\r\n' +
+      'Přízemí – Recepce, pohotovost, administrativa a uklidňující lektvary.\r\n' +
+      '\r\n' +
+      '1. patro – Zranění způsobená kouzly: explodující kotlíky, omylem uříznuté končetiny a kletby.\r\n' +
+      '\r\n' +
+      '2. patro – Nemoci způsobené magickými tvory: upíří kousnutí, dračí horečky, vlkodlačí škrábance.\r\n' +
+      '\r\n' +
+      '3. patro – Magické viry a nakažlivé choroby: mluvící neštovice, samovolné zmizení končetin.\r\n' +
+      '\r\n' +
+      '4. patro – Poškození mysli a duše: následky černé magie, přetížení paměťových kouzel, magické trauma.\r\n' +
+      '\r\n' +
+      '5. patro – Experimentální léčby, léčitelé specialisté a výzkumná laboratoř.\r\n' +
+      '\r\n' +
+      'Suterén – Přísně střežené oddělení pro trvale poškozené případy, oběti temné magie a pacienty neschopné návratu do běžného života.\r\n' +
+      '\r\n' +
+      'Personál\r\n' +
+      'Léčitelé nosí zelené hábity s emblémem sv. Munga držícího hůlku a kost. Jsou odhodlaní, unavení a neskutečně schopní. Učňové léčitelství běhají s tácem lektvarů, přičemž se snaží nezakopnout o pacienta proměněného v želvu.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešní době je nemocnice přeplněná – přijímají raněné z kontinentu, oběti utajených útoků i ty, kdo se snaží ukrýt před zlověstnou budoucností. Vznikají tajná oddělení, kde jsou zkoumány nové formy magie – a ne vždy s vědomím vedení nemocnice.',
+    password: null
+  },
+  {
+    id: 7,
+    name: 'Čarokáva',
+    description: 'Kavárna pro čaroděje',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.858',
+    category_id: 2,
+    sort_order: 20,
+    long_description: 'Čarokáva je místem, kde se zastavil čas. Malá dřevěná vývěska nad vchodem nese zlaté, jemně pulsující runy, které se mění podle fáze měsíce. Dveře, těžké a tmavé, se otevírají téměř samy, jako by zvědavě vítaly každého nového hosta. Uvnitř kavárny vládne podmanivá atmosféra. Stěny jsou vyzdobené starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 31 rooms
+3:57:33 PM [express] GET /api/chat/rooms 304 in 429ms :: [{"id":-1,"name":"Owl Post System","descrip…
+[DEBUG] GET /api/admin/chat-categories
+3:57:34 PM [express] GET /api/admin/chat-categories 304 in 0ms
+[DEBUG] GET /api/admin/character-requests
+3:57:34 PM [express] GET /api/admin/character-requests 304 in 0ms
+[DEBUG] GET /api/admin/activity-log
+3:57:34 PM [express] GET /api/admin/activity-log 304 in 1ms
+[DEBUG] GET /api/admin/housing-requests
+3:57:34 PM [express] GET /api/admin/housing-requests 304 in 0ms
+[DEBUG] GET /api/admin/online-users
+3:57:34 PM [express] GET /api/admin/online-users 304 in 0ms
+[DEBUG] GET /api/admin/chat-categories
+3:57:36 PM [express] GET /api/admin/chat-categories 304 in 1ms
+[DEBUG] GET /api/admin/housing-requests
+3:57:36 PM [express] GET /api/admin/housing-requests 304 in 2ms
+[DEBUG] GET /api/admin/activity-log
+[DEBUG] GET /api/admin/character-requests
+3:57:36 PM [express] GET /api/admin/activity-log 304 in 1ms
+3:57:36 PM [express] GET /api/admin/character-requests 304 in 2ms
+[DEBUG] GET /api/admin/online-users
+3:57:37 PM [express] GET /api/admin/online-users 304 in 1ms
+[DEBUG] GET /api/influence-bar
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750949075,
+  exp: 1751553875
+}
+[DEBUG] GET /api/influence-history
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750949075,
+  exp: 1751553875
+}
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750949075,
+  exp: 1751553875
+}
+[ONLINE] Fetching characters currently in chat rooms...
+[ONLINE] Error fetching online characters: TypeError: storage.getCharactersInChatRooms is not a function
+    at file:///opt/render/project/src/dist/index.js:2757:46
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at requireAuth (file:///opt/render/project/src/dist/index.js:2293:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+3:57:55 PM [express] GET /api/characters/online 500 in 1ms :: {"message":"Failed to fetch online cha…
+[DEBUG] GET /favicon.ico
+3:57:56 PM [express] GET /api/influence-bar 304 in 230ms :: {"grindelwaldPoints":0,"dumbledorePoints…
+3:57:56 PM [express] GET /api/influence-history 304 in 247ms :: [{"id":12,"changeType":"manual","poi…
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750949075,
+  exp: 1751553875
+}
+[ONLINE] Fetching characters currently in chat rooms...
+[ONLINE] Error fetching online characters: TypeError: storage.getCharactersInChatRooms is not a function
+    at file:///opt/render/project/src/dist/index.js:2757:46
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at requireAuth (file:///opt/render/project/src/dist/index.js:2293:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+3:57:57 PM [express] GET /api/characters/online 500 in 2ms :: {"message":"Failed to fetch online cha…
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750949075,
+  exp: 1751553875
+}
+[ONLINE] Fetching characters currently in chat rooms...
+[ONLINE] Error fetching online characters: TypeError: storage.getCharactersInChatRooms is not a function
+    at file:///opt/render/project/src/dist/index.js:2757:46
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at requireAuth (file:///opt/render/project/src/dist/index.js:2293:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+3:57:59 PM [express] GET /api/characters/online 500 in 2ms :: {"message":"Failed to fetch online cha…
+[DEBUG] GET /api/characters
+3:58:01 PM [express] GET /api/characters 401 in 1ms :: {"message":"Unauthorized"}
+[DEBUG] GET /favicon.ico
+[DEBUG] GET /api/characters
+3:58:02 PM [express] GET /api/characters 401 in 1ms :: {"message":"Unauthorized"}
+[DEBUG] GET /favicon.ico
+[DEBUG] GET /api/characters
+3:58:04 PM [express] GET /api/characters 401 in 0ms :: {"message":"Unauthorized"}
+[DEBUG] GET /api/auth/check-username
+3:58:08 PM [express] GET /api/auth/check-username 200 in 2ms
+[DEBUG] GET /api/auth/check-username
+3:58:10 PM [express] GET /api/auth/check-username 200 in 2ms
+[DEBUG] POST /api/auth/register
+[DEBUG] Registration request body: {
+  username: 'Zkouška',
+  email: 'registrace@test.cz',
+  password: 'Tester123',
+  passwordConfirm: 'Tester123',
+  inviteCode: 'HWTSXYEB',
+  firstName: 'Test',
+  middleName: '',
+  lastName: 'Registrace',
+  birthDate: '1890-10-06'
+}
+[DEBUG] Checking invite code: HWTSXYEB
+[DEBUG] Checking existing user: registrace@test.cz
+[DEBUG] Creating user: { username: 'Zkouška', email: 'registrace@test.cz', role: 'user' }
+[DEBUG] Registration error: TypeError: storage.createUser is not a function
+    at file:///opt/render/project/src/dist/index.js:2465:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[DEBUG] Error stack: TypeError: storage.createUser is not a function
+    at file:///opt/render/project/src/dist/index.js:2465:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+3:58:56 PM [express] POST /api/auth/register 500 in 470ms :: {"message":"Registration failed","error…
+[DEBUG] POST /api/auth/register
+[DEBUG] Registration request body: {
+  username: 'Zkouška',
+  email: 'registrace@test.cz',
+  password: 'Tester123',
+  passwordConfirm: 'Tester123',
+  inviteCode: 'HWTSXYEB',
+  firstName: 'Test',
+  middleName: '',
+  lastName: 'Registrace',
+  birthDate: '1890-10-06'
+}
+[DEBUG] Checking invite code: HWTSXYEB
+[DEBUG] Checking existing user: registrace@test.cz
+[DEBUG] Creating user: { username: 'Zkouška', email: 'registrace@test.cz', role: 'user' }
+[DEBUG] Registration error: TypeError: storage.createUser is not a function
+    at file:///opt/render/project/src/dist/index.js:2465:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[DEBUG] Error stack: TypeError: storage.createUser is not a function
+    at file:///opt/render/project/src/dist/index.js:2465:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+3:58:58 PM [express] POST /api/auth/register 500 in 422ms :: {"message":"Registration failed","error…
+[DEBUG] GET /assets/index-XtQLgoQR.cs
