@@ -102,9 +102,11 @@ export default function Home() {
     if (userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0 && user) {
       const savedCharacterId = localStorage.getItem('selectedCharacterId');
       if (savedCharacterId) {
-        const savedCharacter = userCharacters.find((char: any) => 
-          char.id === parseInt(savedCharacterId) && char.userId === user.id && !char.deathDate
-        );
+        const savedCharacter = Array.isArray(userCharacters)
+          ? userCharacters.find((char: any) => 
+              char.id === parseInt(savedCharacterId) && char.userId === user.id && !char.deathDate
+            )
+          : undefined;
         if (savedCharacter) {
           changeCharacter(savedCharacter);
           return;
@@ -268,7 +270,9 @@ export default function Home() {
                 <Select
                   value={selectedCharacter?.id?.toString() || ""}
                   onValueChange={(value) => {
-                    const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
+                    const selectedChar = Array.isArray(userCharacters)
+                      ? userCharacters.find((char: any) => char.id === parseInt(value))
+                      : undefined;
                     if (selectedChar) {
                       changeCharacter(selectedChar);
                       localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
@@ -290,7 +294,7 @@ export default function Home() {
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                    {Array.isArray(userCharacters) ? userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
                       <SelectItem key={character.id} value={character.id.toString()}>
                         <div className="flex items-center gap-2">
                           <CharacterAvatar character={character} size="sm" />
@@ -299,7 +303,7 @@ export default function Home() {
                           </span>
                         </div>
                       </SelectItem>
-                    ))}
+                    )) : null}
                   </SelectContent>
                 </Select>
               )}
