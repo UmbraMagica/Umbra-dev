@@ -1379,17 +1379,17 @@ export default function Admin() {
                             <code className="font-mono bg-muted px-2 py-1 rounded text-xs">
                               {code.code}
                             </code>
-                            <Badge variant={code.is_used ? "secondary" : "default"}>
-                              {code.is_used ? "Použito" : "Aktivní"}
+                            <Badge variant={code.is_used || code.isUsed ? "secondary" : "default"}>
+                              {(code.is_used || code.isUsed) ? "Použito" : "Aktivní"}
                             </Badge>
-                            {code.is_used && code.users && code.users.username && (
-                              <span className="ml-2 text-xs text-muted-foreground">použil: {code.users.username}</span>
+                            {(code.is_used || code.isUsed) && (code.users?.username || code.Users?.username) && (
+                              <span className="ml-2 text-xs text-muted-foreground">použil: {code.users?.username || code.Users?.username}</span>
                             )}
                           </div>
                           <div className="flex flex-col items-end text-xs text-muted-foreground">
-                            <span>Vytvořeno: {code.created_at ? new Date(code.created_at).toLocaleDateString('cs-CZ') : '-'}</span>
-                            {code.is_used && code.used_at && (
-                              <span>Použito: {new Date(code.used_at).toLocaleDateString('cs-CZ')}</span>
+                            <span>Vytvořeno: {code.created_at ? new Date(code.created_at).toLocaleDateString('cs-CZ') : code.createdAt ? new Date(code.createdAt).toLocaleDateString('cs-CZ') : '-'}</span>
+                            {(code.is_used || code.isUsed) && (code.used_at || code.usedAt) && (
+                              <span>Použito: {code.used_at ? new Date(code.used_at).toLocaleDateString('cs-CZ') : new Date(code.usedAt).toLocaleDateString('cs-CZ')}</span>
                             )}
                           </div>
                         </div>
