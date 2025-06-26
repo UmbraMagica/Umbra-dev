@@ -217,11 +217,16 @@ export default function CharacterProfile() {
                       </CardTitle>
                       <div className="flex items-center gap-2 mb-2">
                         <Badge variant={character.isActive ? "default" : "secondary"}>
-                          {character.isActive ? "Aktivní postava" : "Neaktivní postava"}
+                          {character.isActive ? "Hráčská postava" : "Neaktivní postava"}
                         </Badge>
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Hraje: @{character.user?.username || 'Neznámý uživatel'}
+                        <div>Hraje: @{character.user?.username || 'Neznámý uživatel'}</div>
+                        {character.user?.lastLoginAt && (
+                          <div className="mt-1">
+                            Naposledy online: {new Date(character.user.lastLoginAt).toLocaleDateString('cs-CZ')}
+                          </div>
+                        )}
                       </div>
                     </div>
                     {canEdit && (

@@ -157,6 +157,7 @@ export interface IStorage {
   killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
   reviveCharacter(characterId: number): Promise<Character | undefined>;
   getDeadCharacters(): Promise<Character[]>;
+  getActiveCharacters(): Promise<Character[]>;
 
   // Spell operations
   getAllSpells(): Promise<Spell[]>;
@@ -236,7 +237,7 @@ export interface IStorage {
     clearChatMessages(roomId: number): Promise<{ count: number }>;
     getRoomPresence(roomId: number): Promise<any>;
 
-  
+
 }
 
 export class DatabaseStorage implements IStorage {
@@ -261,7 +262,7 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
-  
+
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').update({ role, updated_at: new Date() }).eq('id', id).select().single();
@@ -351,33 +352,33 @@ export class DatabaseStorage implements IStorage {
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
     console.log(`[STORAGE] getCharactersByUserId called for user: ${userId}`);
-    
+
     const { data, error } = await supabase
       .from('characters')
       .select('*')
       .eq('user_id', userId)
       .or('is_system.eq.false,is_system.is.null')
       .order('created_at', { ascending: false });
-      
+
     if (error) {
       console.error("[STORAGE] getCharactersByUserId error:", { userId, error });
       return [];
     }
-    
+
     console.log(`[STORAGE] Raw DB response for user ${userId}:`, data);
-    
+
     if (!data || data.length === 0) {
       console.log(`[STORAGE] No characters found for user ${userId}`);
       return [];
     }
-    
+
     // Extra safety check - filter again to ensure only characters belonging to this user
     const filteredData = data.filter(char => char.user_id === userId);
     console.log(`[STORAGE] After filtering: ${filteredData.length} characters for user ${userId}`);
-    
+
     const camelCaseData = toCamel(filteredData);
     console.log(`[STORAGE] Returning characters:`, camelCaseData.map(c => ({ id: c.id, name: `${c.firstName} ${c.lastName}`, userId: c.userId })));
-    
+
     return camelCaseData;
   }
 
@@ -669,7 +670,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  
+
 
   async updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined> {
     // Převod camelCase na snake_case pro databázi
@@ -1222,18 +1223,39 @@ export class DatabaseStorage implements IStorage {
     return data;
   }
 
-  async getDeadCharacters(): Promise<Character[]> {
-    const { data, error } = await supabase.from('characters').select('*').not('death_date', 'is', null);
+  async getDeadCharacters(): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('characters')
+      .select(`
+        *,
+        users:user_id (username, email)
+      `)
+      .not('death_date', 'is', null)
+      .order('death_date', { ascending: false });
+
     if (error) {
-      console.error("getDeadCharacters error:", error);
-      return [];
+      console.error("Error fetching dead characters:", error);
+      throw error;
     }
-    if (!data || data.length === 0) {
-      console.warn("No dead characters found", { data });
-    } else {
-      console.log(`Loaded ${data.length} dead characters`);
+
+    return data || [];
+  }
+
+  async getActiveCharacters(): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('characters')
+      .select('*')
+      .eq('is_active', true)
+      .is('death_date', null)
+      .eq('is_system', false)
+      .order('first_name');
+
+    if (error) {
+      console.error("Error fetching active characters:", error);
+      throw error;
     }
-    return toCamel(data || []);
+
+    return data || [];
   }
 
   // Spell operations
@@ -1501,7 +1523,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteJournalEntry(id: number): Promise<boolean> {
-    const { error } = await supabase
+    const { error }The code adds a new method to retrieve active characters and integrates it into the storage interface and class implementation.await supabase
       .from('character_journal')
       .delete()
       .eq('id', id);
@@ -1976,7 +1998,7 @@ export class DatabaseStorage implements IStorage {
         subject: subject?.substring(0, 50), 
         contentLength: content?.length
       });
-      
+
       // Validate that both characters exist and get their details
       console.log("[STORAGE][sendOwlPostMessage] === VALIDATING CHARACTER EXISTENCE ===");
 
@@ -2018,7 +2040,7 @@ export class DatabaseStorage implements IStorage {
         console.error("[STORAGE][sendOwlPostMessage] Sender character query error:", { senderCharacterId, error: senderError });
         throw new Error(`Database error looking up sender character ${senderCharacterId}: ${senderError.message}`);
       }
-      
+
       if (!senderExists) {
         console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", { senderCharacterId });
         throw new Error(`Sender character ${senderCharacterId} not found`);
@@ -2037,7 +2059,7 @@ export class DatabaseStorage implements IStorage {
         console.error("[STORAGE][sendOwlPostMessage] Recipient character query error:", { recipientCharacterId, error: recipientError });
         throw new Error(`Database error looking up recipient character ${recipientCharacterId}: ${recipientError.message}`);
       }
-      
+
       if (!recipientExists) {
         console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", { recipientCharacterId });
         throw new Error(`Recipient character ${recipientCharacterId} not found`);

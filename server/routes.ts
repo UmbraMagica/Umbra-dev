@@ -622,9 +622,27 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Seznam online postav (zatím prázdné)
+  // Seznam online postav
   app.get("/api/characters/online", requireAuth, async (_req, res) => {
-    res.json([]);
+    try {
+      // Pro demonstraci vraťme alespoň aktivní postavy
+      // V budoucnu můžeme implementovat skutečný tracking přítomnosti
+      const activeCharacters = await storage.getActiveCharacters();
+      
+      const onlineCharacters = activeCharacters.map((char: any) => ({
+        id: char.id,
+        fullName: `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`,
+        firstName: char.firstName,
+        lastName: char.lastName,
+        location: "Hlavní hala", // Placeholder
+        avatar: char.avatar
+      }));
+      
+      res.json(onlineCharacters);
+    } catch (error) {
+      console.error("Error fetching online characters:", error);
+      res.json([]);
+    }
   });
 
   // Hůlka postavy
@@ -1108,7 +1126,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(400).json({ message: "Neplatné characterId" });
     }
 
-        const character = await storage.getCharacterById(characterId);
+    const character = await storage.getCharacterById(characterId);
     if (!character) {
       return res.status(404).json({ message: "Postava nenalezena" });
     }
@@ -1121,7 +1139,18 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
     }
 
-    res.json(character);
+    // Přidej user data
+    const user = await storage.getUser(character.userId);
+    const characterWithUser = {
+      ...character,
+      user: user ? { 
+        username: user.username, 
+        email: user.email,
+        lastLoginAt: user.lastLoginAt 
+      } : null
+    };
+
+    res.json(characterWithUser);
   });
 
   // Editace postavy
