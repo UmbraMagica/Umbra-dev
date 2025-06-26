@@ -621,51 +621,36 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Seznam online postav
+  // Seznam online postav - jen ty, které jsou skutečně v chatech
   app.get("/api/characters/online", requireAuth, async (_req, res) => {
     try {
-      console.log("[ONLINE] Fetching online characters...");
+      console.log("[ONLINE] Fetching characters currently in chat rooms...");
       
-      // Získáme všechny aktivní postavy
-      const activeCharacters = await storage.getActiveCharacters();
+      // Získáme postavy, které mají aktivní přítomnost v chatových místnostech
+      const onlineCharacters = await storage.getCharactersInChatRooms();
       
-      if (!activeCharacters || !Array.isArray(activeCharacters)) {
-        console.warn("[ONLINE] No active characters or invalid format");
+      if (!onlineCharacters || !Array.isArray(onlineCharacters)) {
+        console.warn("[ONLINE] No online characters or invalid format");
         return res.json([]);
       }
 
-      console.log(`[ONLINE] Found ${activeCharacters.length} active characters`);
+      console.log(`[ONLINE] Found ${onlineCharacters.length} characters in chat rooms`);
 
-      const validOnlineCharacters = activeCharacters
+      const validOnlineCharacters = onlineCharacters
         .filter((char: any) => {
-          // Důkladné kontroly pro validní data
           if (!char || typeof char !== 'object') {
             console.warn("[ONLINE] Invalid character object:", char);
             return false;
           }
 
-          // Kontrola kritických polí
           const hasValidId = typeof char.id === 'number' && char.id > 0;
           const hasValidFirstName = typeof char.firstName === 'string' && char.firstName?.trim() !== '';
           const hasValidLastName = typeof char.lastName === 'string' && char.lastName?.trim() !== '';
           const isAlive = !char.deathDate;
           const isNotSystem = !char.isSystem;
+          const hasValidRoomId = typeof char.roomId === 'number' && char.roomId > 0;
 
-          if (!hasValidId || !hasValidFirstName || !hasValidLastName || !isAlive || !isNotSystem) {
-            console.warn("[ONLINE] Character filtered out:", {
-              id: char.id,
-              firstName: char.firstName,
-              lastName: char.lastName,
-              hasValidId,
-              hasValidFirstName,
-              hasValidLastName,
-              isAlive,
-              isNotSystem
-            });
-            return false;
-          }
-
-          return true;
+          return hasValidId && hasValidFirstName && hasValidLastName && isAlive && isNotSystem && hasValidRoomId;
         })
         .map((char: any) => {
           const fullName = `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`;
@@ -676,21 +661,14 @@ export async function registerRoutes(app: Express): Promise<void> {
             firstName: char.firstName,
             middleName: char.middleName || null,
             lastName: char.lastName,
-            location: "Hlavní hala", // Placeholder - později můžeme přidat skutečnou lokaci
+            location: char.roomName || "Neznámá místnost",
+            roomId: char.roomId,
             avatar: char.avatar || null,
-            isOnline: true // Pro budoucí použití
+            isOnline: true
           };
         });
       
-      console.log(`[ONLINE] Returning ${validOnlineCharacters.length} valid online characters`);
-      
-      // Debug log prvních několika postav
-      if (validOnlineCharacters.length > 0) {
-        console.log("[ONLINE] Sample characters:", validOnlineCharacters.slice(0, 3).map(c => ({
-          id: c.id,
-          fullName: c.fullName
-        })));
-      }
+      console.log(`[ONLINE] Returning ${validOnlineCharacters.length} characters currently in chat rooms`);
       
       res.json(validOnlineCharacters);
     } catch (error) {

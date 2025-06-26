@@ -71,12 +71,12 @@ export default function Home() {
     }
   };
 
-  const { data: onlineCharacters = [] } = useQuery({
+  // Fetch online characters (only characters currently in chat rooms)
+  const { data: onlineCharacters = [], isLoading: onlineLoading } = useQuery<OnlineCharacter[]>({
     queryKey: ["/api/characters/online"],
     enabled: !!user,
-    queryFn: async () => {
-      return apiFetch(`${API_URL}/api/characters/online`);
-    },
+    refetchInterval: 15000, // Refresh every 15 seconds
+    staleTime: 5000, // More frequent updates for real-time feel
   });
 
   // Get user's characters from the auth user object
@@ -323,7 +323,7 @@ export default function Home() {
               <Button 
                 variant="ghost" 
                 className="w-full justify-start text-foreground hover:text-accent" 
-                onClick={() => {
+                onClick={()={() => {
                   setLocation('/settings');
                   setIsMenuOpen(false);
                 }}
@@ -335,7 +335,7 @@ export default function Home() {
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start text-amber-400 hover:text-amber-300 hover:bg-amber-400/10" 
-                  onClick={() => {
+                  onClick={()={() => {
                     setLocation('/admin');
                     setIsMenuOpen(false);
                   }}
@@ -712,7 +712,7 @@ export default function Home() {
                         "Týden dementorů přináší stíny: hledejte světlo ve tmě, najdete ho.",
                         "Období sfinx slibuje hádanky: odpovědi jsou blíže, než si myslíte.",
                         "Nastává čas werewolfů: vaše druhá povaha se může projevit.",
-                        "Týden vampýrů věští nesmrtelnost: něco, co považujete za mrtvé, ožije.",
+                        "Týden vampýrů věští nesmrtelnost: něco, co považujete za mrtvého, ožije.",
                         "Období olbřímů varuje před silou: síla bez moudrosti je nebezpečná.",
                         "Nastává čas koček: vaše intuice bude obzvlášť ostrá dnes.",
                         "Týden sov přináší zprávy: důležitá komunikace je na cestě k vám.",
@@ -907,7 +907,7 @@ export default function Home() {
               </Card>
             )}
 
-            
+
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
@@ -948,8 +948,8 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
-            
-            
+
+
 
             <Card className="bg-card border-border">
               <CardContent className="p-6">

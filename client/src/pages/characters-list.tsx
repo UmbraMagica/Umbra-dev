@@ -44,8 +44,11 @@ export default function CharactersList() {
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
-  // Filtrování systémových postav
-  const visibleCharacters = isAdmin ? characters : characters.filter(char => !char.isSystem);
+  // Filtrování systémových postav - admin vidí všechny, ostatní jen nesystémové
+  const visibleCharacters = characters.filter(char => {
+    if (isAdmin) return true; // Admin vidí všechny postavy
+    return !char.isSystem; // Ostatní nevidí systémové postavy
+  });
 
   if (isLoading) {
     return (
