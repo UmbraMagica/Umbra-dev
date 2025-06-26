@@ -1,38 +1,44 @@
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+
 interface CharacterAvatarProps {
-  character: {
+  character?: {
     firstName: string;
+    middleName?: string;
     lastName: string;
-    avatar?: string | null;
+    avatar?: string;
   };
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-export function CharacterAvatar({ character, size = 'md', className = '' }: CharacterAvatarProps) {
+export function CharacterAvatar({ character, size = "md", className }: CharacterAvatarProps) {
   const sizeClasses = {
-    xs: 'w-6 h-6 text-xs',
-    sm: 'w-8 h-8 text-xs',
-    md: 'w-12 h-12 text-sm',
-    lg: 'w-16 h-16 text-base'
+    sm: "h-8 w-8",
+    md: "h-10 w-10", 
+    lg: "h-12 w-12"
   };
 
-  const initials = `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
+  const getInitials = () => {
+    if (!character) return "?";
+
+    const firstName = character.firstName?.trim() || "";
+    const lastName = character.lastName?.trim() || "";
+
+    const first = firstName.charAt(0) || "";
+    const last = lastName.charAt(0) || "";
+
+    const initials = (first + last).toUpperCase();
+    return initials || "?";
+  };
 
   return (
-    <div className={`${sizeClasses[size]} rounded-full flex items-center justify-center ${className}`}>
-      {character.avatar ? (
-        <img
-          src={character.avatar}
-          alt={`${character.firstName} ${character.lastName}`}
-          className="w-full h-full rounded-full object-cover border-2 border-muted"
-        />
+    <Avatar className={cn(sizeClasses[size], className)}>
+      {character?.avatar ? (
+        <AvatarImage src={character.avatar} alt="Avatar" />
       ) : (
-        <div className="w-full h-full rounded-full bg-primary/20 border-2 border-muted flex items-center justify-center">
-          <span className="font-medium text-primary">
-            {initials}
-          </span>
-        </div>
+        <AvatarFallback>{getInitials()}</AvatarFallback>
       )}
-    </div>
+    </Avatar>
   );
 }
