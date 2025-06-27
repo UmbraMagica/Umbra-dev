@@ -34,6 +34,8 @@ export default function CharactersList() {
 
   const { data: characters = [], isLoading } = useQuery<Character[]>({
     queryKey: ["/api/characters/all"],
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 
   const getCharacterInitials = (character: Character) => {

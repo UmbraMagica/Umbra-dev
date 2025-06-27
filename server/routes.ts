@@ -2291,4 +2291,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Nepodařilo se zamítnout žádost", error: error?.message || error });
     }
   });
+
+  app.get("/api/character-requests/my", requireAuth, async (req, res) => {
+    try {
+      const requests = await storage.getCharacterRequestsByUserId(req.user.id);
+      res.json(requests);
+    } catch (error) {
+      console.error("[character-requests/my] Error:", error);
+      res.status(500).json({ message: "Nepodařilo se načíst žádosti o postavu" });
+    }
+  });
 }
