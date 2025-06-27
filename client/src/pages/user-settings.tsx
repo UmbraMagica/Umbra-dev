@@ -688,7 +688,9 @@ export default function UserSettings() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('cs-CZ');
+    if (!dateString) return "-";
+    const d = new Date(dateString);
+    return isNaN(d.getTime()) ? "-" : d.toLocaleDateString('cs-CZ');
   };
 
   if (!user) {

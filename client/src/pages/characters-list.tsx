@@ -32,10 +32,11 @@ export default function CharactersList() {
 
   const isAdmin = user?.role === 'admin';
 
-  const { data: characters = [], isLoading } = useQuery<Character[]>({
+  const { data: characters = [], isLoading, refetch } = useQuery<Character[]>({
     queryKey: ["/api/characters/all"],
     refetchOnWindowFocus: true,
     staleTime: 0,
+    refetchInterval: 10000,
   });
 
   const getCharacterInitials = (character: Character) => {
@@ -84,6 +85,9 @@ export default function CharactersList() {
         >
           <ArrowLeft className="h-4 w-4" />
           Zpět na hlavní stránku
+        </Button>
+        <Button onClick={() => refetch()} variant="outline" size="sm">
+          Obnovit seznam postav
         </Button>
         <div className="flex items-center gap-2">
           <Users className="h-5 w-5" />

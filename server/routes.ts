@@ -2301,4 +2301,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Nepodařilo se načíst žádosti o postavu" });
     }
   });
+
+  app.get("/api/admin/character-requests", requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getAllCharacterRequests();
+      res.json(requests);
+    } catch (error) {
+      console.error("[admin/character-requests] Error:", error);
+      res.status(500).json({ message: "Nepodařilo se načíst žádosti o postavu" });
+    }
+  });
 }
