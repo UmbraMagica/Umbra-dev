@@ -2190,4 +2190,49 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
     res.json({ success: true });
   });
+
+  // --- ADMIN: Změna role uživatele ---
+  app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
+    const userId = Number(req.params.id);
+    const { role } = req.body;
+    if (!userId || !role || !['admin', 'user'].includes(role)) {
+      return res.status(400).json({ message: "Invalid user id or role" });
+    }
+    try {
+      await storage.updateUserRole(userId, role);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user role", error: error?.message || error });
+    }
+  });
+
+  // --- ADMIN: Změna vypravěče ---
+  app.patch("/api/admin/users/:id/narrator", requireAdmin, async (req, res) => {
+    const userId = Number(req.params.id);
+    const { canNarrate, reason } = req.body;
+    if (!userId || typeof canNarrate !== "boolean") {
+      return res.status(400).json({ message: "Invalid user id or canNarrate" });
+    }
+    try {
+      await storage.updateUserNarrator(userId, canNarrate, reason);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update narrator permission", error: error?.message || error });
+    }
+  });
+
+  // --- ADMIN: Banování uživatele ---
+  app.post("/api/admin/users/:id/ban", requireAdmin, async (req, res) => {
+    const userId = Number(req.params.id);
+    const { reason } = req.body;
+    if (!userId || !reason) {
+      return res.status(400).json({ message: "Invalid user id or reason" });
+    }
+    try {
+      await storage.banUser(userId, reason);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to ban user", error: error?.message || error });
+    }
+  });
 }
