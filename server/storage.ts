@@ -1064,7 +1064,7 @@ export class DatabaseStorage implements IStorage {
 
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
-    const { data, error } = await supabase.from('character_requests').insert([request]).select().single();
+    const { data, error } = await supabase.from('character_requests').insert([toSnake(request)]).select().single();
     if (error) throw new Error(error.message);
     return data;
   }
