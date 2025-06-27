@@ -184,19 +184,17 @@ export function useAuth() {
       if (data.token) {
         localStorage.setItem('jwt_token', data.token);
       }
-      return data.user || null;
-    },
-    onSuccess: (data) => {
-      // Clear any existing character selections to prevent wrong character display
       localStorage.removeItem('selectedCharacterId');
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
+      Object.keys(localStorage).forEach(key => {
         if (key.startsWith('selectedCharacterId_')) {
           localStorage.removeItem(key);
         }
       });
-
-      queryClient.setQueryData(['/api/auth/user'], data);
+      return data.user || null;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['/api/auth/user']);
+      queryClient.invalidateQueries(['/api/characters']);
       setLocation("/");
     },
   });
@@ -204,6 +202,12 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       localStorage.removeItem('jwt_token');
+      localStorage.removeItem('selectedCharacterId');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('selectedCharacterId_')) {
+          localStorage.removeItem(key);
+        }
+      });
       queryClient.setQueryData(['/api/auth/user'], null);
     },
     onSuccess: () => {
