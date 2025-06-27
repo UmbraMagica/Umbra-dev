@@ -1,0 +1,38 @@
+index-C4Q7THUy.js:447 [processCharacters] Processed 2 valid characters from 2 total
+index-C4Q7THUy.js:500 [OwlPost] Načteno userCharacters: Array(2)
+index-C4Q7THUy.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načítám inbox/sent pro postavu: 7 Object
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Raw sent response: Array(1)
+index-C4Q7THUy.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten sentMessages: Array(1)
+index-C4Q7THUy.js:500 [OwlPost] Raw owl-post characters response: Array(15)
+index-C4Q7THUy.js:500 [OwlPost] Načteno owlPostCharacters: Array(15)
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten unreadData: Object
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-C4Q7THUy.js:500 [OwlPost] Načten unreadTotalData: Object
+index-C4Q7THUy.js:500 [OwlPost] Raw inbox response: Array(2)
+index-C4Q7THUy.js:500 [OwlPost] Načten inboxMessages: Array(2)
+index-C4Q7THUy.js:491 Invalid character data: 6
+changeCharacter @ index-C4Q7THUy.js:491
+index-C4Q7THUy.js:491 Invalid character data: 6
+changeCharacter @ index-C4Q7THUy.js:491
+index-C4Q7THUy.js:491 Invalid character data: 6
+changeCharacter @ index-C4Q7THUy.js:491
+(anonymní) @ index-C4Q7THUy.js:57
+b @ index-C4Q7THUy.js:487
+(anonymní) @ index-C4Q7THUy.js:487
+(anonymní) @ index-C4Q7THUy.js:57
+yS @ index-C4Q7THUy.js:48
+(anonymní) @ index-C4Q7THUy.js:48
+Nw @ index-C4Q7THUy.js:48
+Np @ index-C4Q7THUy.js:48
+Ug @ index-C4Q7THUy.js:49
+aO @ index-C4Q7THUy.js:49
