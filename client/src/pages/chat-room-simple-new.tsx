@@ -1106,8 +1106,8 @@ export default function ChatRoom() {
                           </Button>
                         ) : null;
                       }
-                      // For regular character messages - show character change option
-                      const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
+                      // UPRAVENO: Detekce vlastních zpráv a možnost změny postavy pro uživatele i admina pouze u vlastních zpráv, s časovým limitem 5 minut
+                      const isOwnMessage = (message.userId && user?.id && message.userId === user.id) || userCharacters.some((char: any) => char.id === message.characterId);
                       const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
                       return canChangeCharacter && userCharacters.length > 1 ? (
                         <div className="ml-2">

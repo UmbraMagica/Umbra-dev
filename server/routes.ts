@@ -2311,4 +2311,28 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Nepodařilo se načíst žádosti o postavu" });
     }
   });
+
+  app.get("/api/admin/online-users", requireAdmin, async (_req, res) => {
+    try {
+      const onlineCharacters = await storage.getCharactersInChatRooms();
+      if (!onlineCharacters || !Array.isArray(onlineCharacters)) {
+        return res.json([]);
+      }
+      // Vytvoř mapu unikátních uživatelů
+      const userMap = new Map();
+      for (const char of onlineCharacters) {
+        if (char && char.userId && char.user) {
+          userMap.set(char.userId, {
+            id: char.userId,
+            username: char.user.username,
+            role: char.user.role || 'user',
+          });
+        }
+      }
+      res.json(Array.from(userMap.values()));
+    } catch (error) {
+      console.error("[admin/online-users] Error:", error);
+      res.status(500).json({ message: "Nepodařilo se načíst online uživatele" });
+    }
+  });
 }

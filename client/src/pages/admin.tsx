@@ -189,7 +189,7 @@ export default function Admin() {
   const { data: chatCategories = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/chat-categories`] });
   const { data: influenceBar = {} } = useQuery({ queryKey: [`${API_URL}/api/influence-bar`] });
   const { data: influenceHistory = [] } = useQuery({ queryKey: [`${API_URL}/api/influence-history`] });
-  const { data: onlineUsersData = {} } = useQuery({ 
+  const { data: onlineUsersData = [] } = useQuery({ 
     queryKey: [`${API_URL}/api/admin/online-users`],
     queryFn: getQueryFn({ on401: "throw" }),
     enabled: !!token,
@@ -221,7 +221,7 @@ export default function Admin() {
     adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && !u.isSystem).length : 0,
     activeCharacters: liveCharacters.length,
     deadCharacters: nonSystemCharacters.filter((c: any) => c.deathDate).length,
-    onlineNow: uniqueOnlineUsers,
+    onlineNow: Array.isArray(onlineUsersData) ? onlineUsersData.length : 0,
     pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
   };
 
@@ -1097,6 +1097,16 @@ export default function Admin() {
                   <h3 className="text-lg font-semibold text-orange-400">Online nyní</h3>
                   <p className="text-2xl font-bold text-foreground">{stats.onlineNow}</p>
                   <p className="text-sm text-muted-foreground">ze {stats.totalUsers} celkem</p>
+                  {/* Výpis online uživatelů */}
+                  {Array.isArray(onlineUsersData) && onlineUsersData.length > 0 && (
+                    <ul className="mt-2 text-xs text-muted-foreground">
+                      {onlineUsersData.map((u: any) => (
+                        <li key={u.id}>
+                          {u.username} <span className="ml-1">({u.role})</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <div className="h-12 w-12 bg-orange-500/20 rounded-full flex items-center justify-center">
                   <Circle className="h-6 w-6 text-orange-400" />
@@ -1715,10 +1725,23 @@ export default function Admin() {
                             <Badge variant="secondary" className="text-xs">Postava</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {request.user?.username} • {request.school || 'Neznámá škola'}
+                            Uživatel: <b>{request.user?.username}</b> • Škola: <b>{request.school || 'Neznámá škola'}</b>
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
+                            Datum narození: <b>{request.birthDate ? new Date(request.birthDate).toLocaleDateString('cs-CZ') : '-'}</b>
+                          </p>
+                          {request.description && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Popis: {request.description}
+                            </p>
+                          )}
+                          {request.reason && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Důvod: {request.reason}
+                            </p>
+                          )}
+                          <p className="text-xs text-muted-foreground">
+                            Požádáno: {request.createdAt ? new Date(request.createdAt).toLocaleDateString('cs-CZ') : '-'}
                           </p>
                         </div>
                       </div>
