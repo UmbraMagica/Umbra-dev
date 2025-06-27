@@ -1059,30 +1059,30 @@ export class DatabaseStorage implements IStorage {
 
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
-    const { data, error } = await supabase.from('characterRequests').insert([request]).select().single();
+    const { data, error } = await supabase.from('character_requests').insert([request]).select().single();
     if (error) throw new Error(error.message);
     return data;
   }
 
   async getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]> {
-    const { data, error } = await supabase.from('characterRequests').select('*').eq('userId', userId);
+    const { data, error } = await supabase.from('character_requests').select('*').eq('user_id', userId);
     if (error) return [];
     return data || [];
   }
 
   async getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined> {
-    const { data, error } = await supabase.from('characterRequests').select('*').eq('id', requestId).single();
+    const { data, error } = await supabase.from('character_requests').select('*').eq('id', requestId).single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async deleteCharacterRequest(requestId: number): Promise<boolean> {
-    const { error } = await supabase.from('characterRequests').delete().eq('id', requestId);
+    const { error } = await supabase.from('character_requests').delete().eq('id', requestId);
     return !error;
   }
 
   async getAllCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
-    const { data: requests, error } = await supabase.from('characterRequests').select('*');
+    const { data: requests, error } = await supabase.from('character_requests').select('*');
     if (error || !requests) return [];
     const { data: usersData } = await supabase.from('users').select('id,username,email');
     return toCamel(requests.map(r => ({
@@ -1092,7 +1092,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
-    const { data: requests, error } = await supabase.from('characterRequests').select('*').eq('status', 'pending');
+    const { data: requests, error } = await supabase.from('character_requests').select('*').eq('status', 'pending');
     if (error || !requests) return [];
     const { data: usersData } = await supabase.from('users').select('id,username,email');
     return toCamel(requests.map(r => ({

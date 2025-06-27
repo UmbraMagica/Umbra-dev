@@ -33,6 +33,7 @@ import {
   Trash2
 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
+import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from "@/components/ui/select";
 
 type CharacterRequestForm = z.infer<typeof characterRequestSchema>;
 type HousingRequestForm = z.infer<typeof insertHousingRequestSchema>;
@@ -52,6 +53,20 @@ interface CharacterRequest {
 }
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+const MAGICAL_SCHOOLS = [
+  "Bradavice",
+  "Krásnohůlky",
+  "Kruval",
+  "Ilvermorny",
+  "Salemská škola pro čarodějky",
+  "Uagadou",
+  "Mahoutokoto",
+  "Castelobruxo",
+  "Koldovstoretz",
+  "Valšebnyj puť",
+  "Domácí vzdělávání"
+];
 
 export default function UserSettings() {
   const { user } = useAuth();
@@ -1037,12 +1052,25 @@ export default function UserSettings() {
                           )}
                         </div>
                         <div>
-                          <Label htmlFor="school">Škola</Label>
-                          <Input
-                            id="school"
-                            {...form.register("school")}
-                            placeholder="Například Bradavice, Durmstrang..."
-                          />
+                          <Label htmlFor="school">Škola *</Label>
+                          <Select
+                            value={form.watch("school") || ""}
+                            onValueChange={value => form.setValue("school", value)}
+                          >
+                            <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-200">
+                              <SelectValue placeholder="Vyberte školu" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-slate-800 border-slate-600">
+                              {MAGICAL_SCHOOLS.map((school) => (
+                                <SelectItem key={school} value={school}>
+                                  {school}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {form.formState.errors.school && (
+                            <p className="text-sm text-destructive">{form.formState.errors.school.message}</p>
+                          )}
                         </div>
                       </div>
 
