@@ -2438,11 +2438,6 @@ export class DatabaseStorage implements IStorage {
     // Optionally log the reason somewhere
     return this.updateUserNarratorPermission(id, canNarrate);
   }
-
-  // Alias pro banUser, pokud už existuje
-  async banUser(id: number, banReason: string): Promise<void> {
-    await supabase.from('users').update({ is_banned: true, ban_reason: banReason, banned_at: new Date() }).eq('id', id);
-  }
 }
 
 export const storage = new DatabaseStorage();
