@@ -367,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const validCharacters = validateAndFilterCharacters(characters);
-      
+
       // Extra validation: ensure all characters belong to the requesting user
       const userOwnedCharacters = validCharacters.filter(char => {
         const belongsToUser = char.userId === req.user!.id;
@@ -392,7 +392,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!characterId || isNaN(characterId)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
-      
+
       // Ověř, že postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
         const characters = await storage.getCharactersByUserId(req.user!.id);
@@ -400,7 +400,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
-      
+
       const count = await storage.getUnreadOwlPostCount(characterId);
       res.json({ count });
     } catch (error) {
@@ -416,14 +416,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!characterId || isNaN(characterId)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
-      
+
       if (req.user!.role !== 'admin') {
         const characters = await storage.getCharactersByUserId(req.user!.id);
         if (!characters.some((char: any) => char.id === characterId)) {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
-      
+
       const inbox = await storage.getOwlPostInbox(characterId);
       res.json(Array.isArray(inbox) ? inbox : []);
     } catch (error) {
@@ -439,14 +439,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!characterId || isNaN(characterId)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
-      
+
       if (req.user!.role !== 'admin') {
         const characters = await storage.getCharactersByUserId(req.user!.id);
         if (!characters.some((char: any) => char.id === characterId)) {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
-      
+
       const sent = await storage.getOwlPostSent(characterId);
       res.json(Array.isArray(sent) ? sent : []);
     } catch (error) {
@@ -472,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       });
 
       const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-      
+
       console.log("[OWL-POST] === VALIDATING REQUEST FIELDS ===");
       console.log("[OWL-POST] Extracted fields:", {
         senderCharacterId,
@@ -480,7 +480,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         subject,
         contentLength: content?.length
       });
-      
+
       // Validace povinných polí
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
         const missingFields = [];
@@ -488,7 +488,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         if (!recipientCharacterId) missingFields.push('recipientCharacterId');
         if (!subject) missingFields.push('subject');
         if (!content) missingFields.push('content');
-        
+
         console.error("[OWL-POST] Missing required fields:", missingFields);
         return res.status(400).json({ 
           message: "Missing required fields: senderCharacterId, recipientCharacterId, subject, content",
@@ -518,14 +518,14 @@ export async function registerRoutes(app: Express): Promise<void> {
         console.error("[OWL-POST] Invalid recipientCharacterId:", { original: recipientCharacterId, converted: recipientCharacterIdNum });
         return res.status(400).json({ message: "Invalid recipientCharacterId" });
       }
-      
+
       console.log("[OWL-POST] === CHECKING USER PERMISSIONS ===");
       // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
         console.log("[OWL-POST] User is not admin, checking character ownership...");
         const characters = await storage.getCharactersByUserId(req.user!.id);
         console.log("[OWL-POST] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
-        
+
         if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterIdNum)) {
           console.error("[OWL-POST] Character does not belong to user:", {
             userId: req.user!.id,
@@ -538,12 +538,12 @@ export async function registerRoutes(app: Express): Promise<void> {
       } else {
         console.log("[OWL-POST] User is admin, skipping character ownership check");
       }
-      
+
       console.log("[OWL-POST] === CALLING STORAGE FUNCTION ===");
       console.log("[OWL-POST] Sending message from character", senderCharacterIdNum, "to", recipientCharacterIdNum);
 
       const msg = await storage.sendOwlPostMessage(senderCharacterIdNum, recipientCharacterIdNum, subject, content);
-      
+
       console.log("[OWL-POST] === MESSAGE SENT SUCCESSFULLY ===");
       console.log("[OWL-POST] Message sent successfully:", {
         id: msg.id,
@@ -551,7 +551,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         recipientCharacterId: msg.recipientCharacterId,
         subject: msg.subject
       });
-      
+
       console.log("[OWL-POST] === REQUEST END SUCCESS ===");
       res.status(201).json(msg);
     } catch (error: any) {
@@ -567,7 +567,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         hint: error.hint,
         stack: error.stack
       });
-      
+
       res.status(500).json({ 
         message: error.message || "Failed to send message",
         error: process.env.NODE_ENV === 'development' ? error.stack : undefined,
@@ -585,7 +585,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!messageId || isNaN(messageId) || !characterId) {
         return res.status(400).json({ message: "Invalid messageId or characterId" });
       }
-      
+
       // Ověř, že postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
         const characters = await storage.getCharactersByUserId(req.user!.id);
@@ -593,7 +593,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
-      
+
       const ok = await storage.markOwlPostMessageRead(messageId, characterId);
       if (ok) {
         res.json({ success: true });
@@ -628,10 +628,10 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.get("/api/characters/online", requireAuth, async (_req, res) => {
     try {
       console.log("[ONLINE] Fetching characters currently in chat rooms...");
-      
+
       // Získáme postavy, které mají aktivní přítomnost v chatových místnostech
       const onlineCharacters = await storage.getCharactersInChatRooms();
-      
+
       if (!onlineCharacters || !Array.isArray(onlineCharacters)) {
         console.warn("[ONLINE] No online characters or invalid format");
         return res.json([]);
@@ -652,12 +652,13 @@ export async function registerRoutes(app: Express): Promise<void> {
           const isAlive = !char.deathDate;
           const isNotSystem = !char.isSystem;
           const hasValidRoomId = typeof char.roomId === 'number' && char.roomId > 0;
+          const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
 
-          return hasValidId && hasValidFirstName && hasValidLastName && isAlive && isNotSystem && hasValidRoomId;
+          return hasValidId && hasValidFirstName && hasValidLastName && isAlive && isNotSystem && hasValidRoomId && hasValidUserId;
         })
         .map((char: any) => {
           const fullName = `${char.firstName}${char.middleName ? ` ${char.middleName}` : ''} ${char.lastName}`;
-          
+
           return {
             id: char.id,
             fullName: fullName,
@@ -667,12 +668,13 @@ export async function registerRoutes(app: Express): Promise<void> {
             location: char.roomName || "Neznámá místnost",
             roomId: char.roomId,
             avatar: char.avatar || null,
+            userId: char.userId,
             isOnline: true
           };
         });
-      
+
       console.log(`[ONLINE] Returning ${validOnlineCharacters.length} characters currently in chat rooms`);
-      
+
       res.json(validOnlineCharacters);
     } catch (error) {
       console.error("[ONLINE] Error fetching online characters:", error);
@@ -687,7 +689,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!characterId || isNaN(characterId)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
-      
+
       // Check character ownership
       if (req.user!.role !== 'admin') {
         const character = await storage.getCharacterById(characterId);
@@ -695,12 +697,12 @@ export async function registerRoutes(app: Express): Promise<void> {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
-      
+
       const wand = await storage.getCharacterWand(characterId);
       if (!wand) {
         return res.status(404).json({ message: "Character has no wand" });
       }
-      
+
       res.json(wand);
     } catch (error) {
       console.error("Error fetching character wand:", error);
@@ -1728,11 +1730,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       let totalCount = 0;
       const characterIdParam = req.query.characterId;
       const characterId = characterIdParam ? Number(characterIdParam) : undefined;
-      
+
       if (characterIdParam && (isNaN(characterId) || characterId <= 0)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
-      
+
       if (characterId) {
         // Ověření přístupu k postavě
         if (req.user!.role !== 'admin') {
@@ -2077,7 +2079,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post('/api/debug/owl-post-test', requireAuth, async (req, res) => {
     try {
       console.log("[DEBUG][OWL-POST-TEST] Testing owl post message creation");
-      
+
       // Test basic database connection
       const { data: testQuery, error: testError } = await supabase
         .from('messages')

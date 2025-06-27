@@ -189,8 +189,17 @@ export default function Admin() {
   const { data: chatCategories = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/chat-categories`] });
   const { data: influenceBar = {} } = useQuery({ queryKey: [`${API_URL}/api/influence-bar`] });
   const { data: influenceHistory = [] } = useQuery({ queryKey: [`${API_URL}/api/influence-history`] });
-  const { data: onlineUsersData = {} } = useQuery({ queryKey: [`${API_URL}/api/admin/online-users`] });
+  const { data: onlineUsersData = {} } = useQuery({ 
+    queryKey: [`${API_URL}/api/admin/online-users`],
+    queryFn: getQueryFn({ on401: "throw" }),
+    enabled: !!token,
+  });
   const { data: chatRooms = [] } = useQuery({ queryKey: [`${API_URL}/api/chat/rooms`] });
+  const { data: onlineCharacters = [] } = useQuery({ 
+    queryKey: [`${API_URL}/api/characters/online`],
+    queryFn: getQueryFn({ on401: "throw" }),
+    enabled: !!token,
+  });
 
   // Stats calculations
   // Filter out system characters (not users)
@@ -202,12 +211,17 @@ export default function Admin() {
     (character: any) => !(character.deathDate ?? character.death_date)
   );
 
+  // Calculate unique online users from online characters
+  const uniqueOnlineUsers = Array.isArray(onlineCharacters) 
+    ? new Set(onlineCharacters.map((char: any) => char.userId)).size 
+    : 0;
+
   const stats = {
     totalUsers: Array.isArray(users) ? users.filter((u: any) => !u.isSystem).length : 0,
     adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && !u.isSystem).length : 0,
     activeCharacters: liveCharacters.length,
     deadCharacters: nonSystemCharacters.filter((c: any) => c.deathDate).length,
-    onlineNow: (onlineUsersData as any)?.count || 0,
+    onlineNow: uniqueOnlineUsers,
     pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
   };
 
@@ -252,7 +266,8 @@ export default function Admin() {
         title: "Úspěch",
         description: "Role uživatele byla změněna",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/users`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/admin/activity-log`] });
     },
     onError: (error: any) => {
       toast({
@@ -302,9 +317,9 @@ export default function Admin() {
         title: "Úspěch",
         description: "Právo vypravěče bylo změněno",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/users`] });
       queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/activity-log'] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/admin/activity-log`] });
     },
     onError: (error: any) => {
       toast({
@@ -327,7 +342,8 @@ export default function Admin() {
       setBanUserData(null);
       setBanReason("");
       setShowConfirmBan(false);
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/users`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/admin/activity-log`] });
     },
     onError: (error: any) => {
       toast({
@@ -1501,51 +1517,55 @@ export default function Admin() {
                       </div>
                       
                       {/* Expandable Characters List */}
-                      {selectedUserId === user.id && user.characters && user.characters.length > 0 && (
-                        <div className="mt-3 p-3 bg-muted/50 rounded-lg border-l-2 border-blue-400">
+                      {selectedUserId === user.id && (
+                        <div className="w-full mt-3 p-3 bg-muted/50 rounded-lg border-l-2 border-blue-400">
                           <h4 className="text-sm font-medium text-foreground mb-2">Postavy uživatele {user.username}:</h4>
-                          <div className="space-y-2">
-                            {user.characters.map((character: any) => (
-                              <div key={character.id} className="flex items-center justify-between p-2 bg-background/50 rounded">
-                                <div className="flex items-center space-x-2">
-                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs text-white ${
-                                    character.deathDate ? 'bg-red-500' : 'bg-green-500'
-                                  }`}>
-                                    {character.firstName.charAt(0)}{character.lastName.charAt(0)}
+                          {user.characters && user.characters.length > 0 ? (
+                            <div className="space-y-2">
+                              {user.characters.map((character: any) => (
+                                <div key={character.id} className="flex items-center justify-between p-2 bg-background/50 rounded">
+                                  <div className="flex items-center space-x-2">
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs text-white ${
+                                      character.deathDate ? 'bg-red-500' : 'bg-green-500'
+                                    }`}>
+                                      {character.firstName.charAt(0)}{character.lastName.charAt(0)}
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium">
+                                        {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {user.username === 'Systém' ? 'Systém' : character.deathDate ? 'Mrtvá postava' : 'Živá postava'}
+                                        {character.school && ` • ${character.school}`}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {user.username === 'Systém' ? 'Systém' : character.deathDate ? 'Mrtvá postava' : 'Živá postava'}
-                                      {character.school && ` • ${character.school}`}
-                                    </p>
+                                  <div className="flex items-center space-x-1">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setLocation(`/characters/${character.id}?from=admin`)}
+                                      className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
+                                      title="Zobrazit profil postavy"
+                                    >
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setLocation(`/admin/characters/${character.id}`)}
+                                      className="text-green-400 hover:text-green-300 h-6 w-6 p-0"
+                                      title="Editovat postavu"
+                                    >
+                                      <Edit className="h-3 w-3" />
+                                    </Button>
                                   </div>
                                 </div>
-                                <div className="flex items-center space-x-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setLocation(`/characters/${character.id}?from=admin`)}
-                                    className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
-                                    title="Zobrazit profil postavy"
-                                  >
-                                    <Eye className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setLocation(`/admin/characters/${character.id}`)}
-                                    className="text-green-400 hover:text-green-300 h-6 w-6 p-0"
-                                    title="Editovat postavu"
-                                  >
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Uživatel nemá žádné postavy</p>
+                          )}
                         </div>
                       )}
                     </div>
