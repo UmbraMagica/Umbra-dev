@@ -440,6 +440,7 @@ export default function UserSettings() {
       form.reset();
       setShowNewRequestForm(false);
       queryClient.invalidateQueries({ queryKey: ["/api/character-requests/my"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/all"] });
     },
     onError: (error: any) => {
       toast({
