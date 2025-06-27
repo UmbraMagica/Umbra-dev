@@ -15,7 +15,7 @@ interface Character {
 interface SelectedCharacterContextType {
   selectedCharacter: Character | null;
   userCharacters: Character[];
-  changeCharacter: (char: Character | null) => void;
+  changeCharacter: (char: Character | string | null) => void;
   isLoading: boolean;
   canSendAsNarrator: boolean;
 }
@@ -129,7 +129,17 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
     }
   }, [userCharacters, isLoading, roomId, canSendAsNarrator, selectedCharacter]);
 
-  const changeCharacter = (char: Character | null) => {
+  const changeCharacter = (charOrId: Character | string | null) => {
+    let char: Character | null = null;
+    
+    // Handle string ID (for owl-post compatibility)
+    if (typeof charOrId === 'string') {
+      const characterId = parseInt(charOrId);
+      char = userCharacters.find((c: Character) => c.id === characterId) || null;
+    } else {
+      char = charOrId;
+    }
+
     // Validate character data before setting
     if (char && !isValidCharacter(char)) {
       console.error('Invalid character data:', char);

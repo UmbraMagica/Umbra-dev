@@ -422,7 +422,13 @@ function OwlPost() {
               <span className="text-muted-foreground">Aktivní postava:</span>
               <Select 
                 value={selectedCharacter?.id?.toString() || ""} 
-                onValueChange={changeCharacter}
+                onValueChange={(value) => {
+                  const characterId = parseInt(value);
+                  const character = userCharacters.find((char: any) => char.id === characterId);
+                  if (character) {
+                    changeCharacter(character);
+                  }
+                }}
               >
                 <SelectTrigger className="w-40 h-7 text-xs">
                   <SelectValue />
