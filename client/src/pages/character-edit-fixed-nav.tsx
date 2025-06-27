@@ -406,12 +406,6 @@ export default function CharacterEditFixedNav() {
                         ))}
                       </SelectContent>
                     </Select>
-                    {primaryCharacter?.schoolSetAt && (
-                      <p className="text-sm text-amber-600 flex items-center gap-1">
-                        <Lock className="h-3 w-3" />
-                        Škola již byla nastavena a nemůže být změněna
-                      </p>
-                    )}
                   </div>
 
                   {/* Fyzické vlastnosti */}

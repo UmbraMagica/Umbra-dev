@@ -2235,4 +2235,27 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Failed to ban user", error: error?.message || error });
     }
   });
+
+  // --- Žádost o novou postavu ---
+  app.post("/api/character-requests", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { firstName, middleName, lastName, birthDate, school, description } = req.body;
+      if (!firstName || !lastName || !birthDate || !school) {
+        return res.status(400).json({ message: "Chybí povinné údaje" });
+      }
+      const request = await storage.createCharacterRequest({
+        userId,
+        firstName,
+        middleName,
+        lastName,
+        birthDate,
+        school,
+        description
+      });
+      res.json(request);
+    } catch (error) {
+      res.status(500).json({ message: "Nepodařilo se vytvořit žádost o postavu", error: error?.message || error });
+    }
+  });
 }
