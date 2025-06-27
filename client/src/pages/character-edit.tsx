@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -32,6 +31,20 @@ interface Character {
   showHistoryToOthers?: boolean;
   isActive: boolean;
 }
+
+const MAGICAL_SCHOOLS = [
+  "Bradavice",
+  "Krásnohůlky",
+  "Kruval",
+  "Ilvermorny",
+  "Salemská škola pro čarodějky",
+  "Uagadou",
+  "Mahoutokoto",
+  "Castelobruxo",
+  "Koldovstoretz",
+  "Valšebnyj puť",
+  "Domácí vzdělávání"
+];
 
 export default function CharacterEdit() {
   const { user } = useAuth();
@@ -304,10 +317,11 @@ export default function CharacterEdit() {
                         <SelectValue placeholder="Vyberte školu" />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-800 border-slate-600">
-                        <SelectItem value="Bradavice">Bradavice</SelectItem>
-                        <SelectItem value="Beauxbatons">Beauxbatons</SelectItem>
-                        <SelectItem value="Durmstrang">Durmstrang</SelectItem>
-                        <SelectItem value="Jiná">Jiná</SelectItem>
+                        {MAGICAL_SCHOOLS.map((school) => (
+                          <SelectItem key={school} value={school}>
+                            {school}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   ) : (

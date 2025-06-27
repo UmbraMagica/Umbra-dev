@@ -116,18 +116,19 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
       }
     }
 
-    // If no saved character or invalid, select first active or first available
+    // Pokud je uložené ID neplatné (nepatří aktuálnímu uživateli), vyber první živou postavu
     if (!targetCharacter) {
       targetCharacter = allOptions.find((c: Character) => c.isActive) || allOptions[0] || null;
+      if (targetCharacter) {
+        localStorage.setItem(`selectedCharacterId_${roomId}`, targetCharacter.id.toString());
+      }
     }
 
     // Only update if different from current
     if (targetCharacter && (!selectedCharacter || targetCharacter.id !== selectedCharacter.id)) {
-      console.log('Setting selected character:', targetCharacter.firstName);
       setSelectedCharacter(targetCharacter);
-      if (roomId) localStorage.setItem(`selectedCharacterId_${roomId}`, targetCharacter.id.toString());
     }
-  }, [userCharacters, isLoading, roomId, canSendAsNarrator, selectedCharacter]);
+  }, [userCharacters, isLoading, roomId, canSendAsNarrator]);
 
   const changeCharacter = (charOrId: Character | string | null) => {
     let char: Character | null = null;

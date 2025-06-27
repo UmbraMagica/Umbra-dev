@@ -30,14 +30,15 @@ type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
 // Seznam kouzelných škol seřazený abecedně
 const MAGICAL_SCHOOLS = [
   "Bradavice",
-  "Durmstrang", 
-  "Ilvermorny",
-  "Koldovstoretz",
   "Krásnohůlky",
   "Kruval",
-  "Mahoutokoro",
+  "Ilvermorny",
   "Salemská škola pro čarodějky",
   "Uagadou",
+  "Mahoutokoto",
+  "Castelobruxo",
+  "Koldovstoretz",
+  "Valšebnyj puť",
   "Domácí vzdělávání"
 ];
 
@@ -108,6 +109,14 @@ export default function CharacterEditFixedNav() {
     },
   });
 
+  // V useForm a resetu pro admina zajistím správné propsání birthDate:
+  const formatDateForInput = (dateString?: string) => {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "";
+    return d.toISOString().slice(0, 10);
+  };
+
   // Admin form for editing all fields
   const adminForm = useForm<AdminEditForm>({
     resolver: zodResolver(characterAdminEditSchema),
@@ -115,9 +124,11 @@ export default function CharacterEditFixedNav() {
       firstName: primaryCharacter?.firstName || "",
       middleName: primaryCharacter?.middleName || "",
       lastName: primaryCharacter?.lastName || "",
-      birthDate: primaryCharacter?.birthDate || "",
+      birthDate: formatDateForInput(primaryCharacter?.birthDate),
       school: primaryCharacter?.school || "",
       description: primaryCharacter?.description || "",
+      height: primaryCharacter?.height || undefined,
+      weight: primaryCharacter?.weight || undefined,
     },
   });
 
@@ -135,7 +146,7 @@ export default function CharacterEditFixedNav() {
         firstName: primaryCharacter.firstName || "",
         middleName: primaryCharacter.middleName || "",
         lastName: primaryCharacter.lastName || "",
-        birthDate: primaryCharacter.birthDate || "",
+        birthDate: formatDateForInput(primaryCharacter.birthDate),
         school: primaryCharacter.school || "",
         description: primaryCharacter.description || "",
         height: primaryCharacter.height || undefined,
