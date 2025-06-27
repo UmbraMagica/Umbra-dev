@@ -2258,4 +2258,30 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: "Nepodařilo se vytvořit žádost o postavu", error: error?.message || error });
     }
   });
+
+  // --- ADMIN: Schválení žádosti o novou postavu ---
+  app.post("/api/admin/character-requests/:id/approve", requireAdmin, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      const adminId = req.user.id;
+      const { reviewNote } = req.body;
+      const character = await storage.approveCharacterRequest(requestId, adminId, reviewNote);
+      res.json(character);
+    } catch (error) {
+      res.status(500).json({ message: "Nepodařilo se schválit žádost", error: error?.message || error });
+    }
+  });
+
+  // --- ADMIN: Zamítnutí žádosti o novou postavu ---
+  app.post("/api/admin/character-requests/:id/reject", requireAdmin, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      const adminId = req.user.id;
+      const { reason } = req.body;
+      const request = await storage.rejectCharacterRequest(requestId, adminId, reason);
+      res.json(request);
+    } catch (error) {
+      res.status(500).json({ message: "Nepodařilo se zamítnout žádost", error: error?.message || error });
+    }
+  });
 }
