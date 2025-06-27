@@ -91,8 +91,10 @@ function validateAndFilterCharacters(characters: any[]): any[] {
       const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
       const hasValidLastName = typeof char.lastName === 'string' && char.lastName.trim() !== '';
       const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
+      const isNotSystem = !char.isSystem;
+      const isAlive = !char.deathDate;
 
-      const isValid = hasValidId && hasValidFirstName && hasValidLastName && hasValidUserId;
+      const isValid = hasValidId && hasValidFirstName && hasValidLastName && hasValidUserId && isNotSystem && isAlive;
 
       if (!isValid) {
         console.warn(`[validateAndFilterCharacters] Invalid character ${index} filtered out:`, {
@@ -100,13 +102,17 @@ function validateAndFilterCharacters(characters: any[]): any[] {
           firstName: char.firstName,
           lastName: char.lastName,
           userId: char.userId,
+          isSystem: char.isSystem,
+          deathDate: char.deathDate,
           firstNameType: typeof char.firstName,
           lastNameType: typeof char.lastName,
           issues: {
             invalidId: !hasValidId,
             invalidFirstName: !hasValidFirstName,
             invalidLastName: !hasValidLastName,
-            invalidUserId: !hasValidUserId
+            invalidUserId: !hasValidUserId,
+            isSystem: !isNotSystem,
+            isDead: !isAlive
           }
         });
       }
