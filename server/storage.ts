@@ -726,7 +726,7 @@ export class DatabaseStorage implements IStorage {
   async getAllCharacters(includeSystem = false): Promise<Character[]> {
     let query = supabase
       .from('characters')
-      .select('*')
+      .select('*, user:user_id(username)')
       .eq('is_active', true)
       .is('death_date', null);
 
@@ -1064,8 +1064,21 @@ export class DatabaseStorage implements IStorage {
 
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
-    const { data, error } = await supabase.from('character_requests').insert([toSnake(request)]).select().single();
-    if (error) throw new Error(error.message);
+    console.log('[createCharacterRequest] Incoming request:', request);
+    const snakeRequest = toSnake(request);
+    console.log('[createCharacterRequest] Snake_case request:', snakeRequest);
+    const { data, error } = await supabase.from('character_requests').insert([snakeRequest]).select().single();
+    console.log('[createCharacterRequest] Supabase response:', { data, error });
+    if (error) {
+      console.error('[createCharacterRequest] Supabase error:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        full: error
+      });
+      throw new Error(`Supabase error: ${error.message} | Details: ${error.details || ''} | Hint: ${error.hint || ''} | Code: ${error.code || ''}`);
+    }
     return data;
   }
 
