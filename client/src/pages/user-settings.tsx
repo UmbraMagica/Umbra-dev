@@ -294,7 +294,7 @@ export default function UserSettings() {
     enabled: !!user && housingType === 'custom' && locationType === 'area',
   });
 
-  // Fetch user's characters (filter only alive characters)
+  // Fetch user's characters using useAuth hook which already handles character loading
   const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
@@ -304,18 +304,52 @@ export default function UserSettings() {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       });
       if (!response.ok) {
+        console.error('Failed to fetch characters:', response.status, response.statusText);
         throw new Error('Failed to fetch characters');
       }
       const data = await response.json();
-      return data.characters || [];
+      console.log('[user-settings] Characters response:', data);
+      
+      // Handle different response formats
+      if (Array.isArray(data)) {
+        return data;
+      } else if (data && Array.isArray(data.characters)) {
+        return data.characters;
+      } else {
+        console.warn('[user-settings] Unexpected characters data format:', data);
+        return [];
+      }
     }
   });
 
+  // Also try to get characters from useAuth if available
+  const authCharacters = user?.characters || [];
+  
+  // Merge characters from both sources and deduplicate
+  const allCharacters = [...allUserCharacters, ...authCharacters];
+  const uniqueCharacters = allCharacters.filter((char, index, self) => 
+    index === self.findIndex(c => c.id === char.id)
+  );
+
   // Filter only alive characters (not in cemetery) and exclude system characters
-  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem && char.userId === user?.id) : [];
+  const userCharacters = Array.isArray(uniqueCharacters) 
+    ? uniqueCharacters.filter((char: any) => {
+        console.log('[user-settings] Checking character:', char);
+        return char && 
+               typeof char === 'object' && 
+               !char.deathDate && 
+               !char.isSystem && 
+               char.userId === user?.id &&
+               char.firstName &&
+               char.lastName;
+      }) 
+    : [];
+
+  console.log('[user-settings] Final userCharacters:', userCharacters);
 
   // Initialize user settings from user data
   useEffect(() => {
@@ -339,13 +373,29 @@ export default function UserSettings() {
 
   // Initialize character order when userCharacters is loaded
   useEffect(() => {
+    console.log('[user-settings] Character order effect triggered:', { 
+      userCharactersLength: userCharacters.length, 
+      userCharacterOrder: user?.characterOrder,
+      currentCharacterOrder: characterOrder 
+    });
+    
     if (userCharacters && userCharacters.length > 0) {
       if (user?.characterOrder && Array.isArray(user.characterOrder) && user.characterOrder.length > 0) {
-        // Use saved order from user preferences - only if different from current state
-        const newOrder = user.characterOrder;
-        if (JSON.stringify(newOrder) !== JSON.stringify(characterOrder)) {
-          console.log('Setting character order from user preferences:', newOrder);
-          setCharacterOrder(newOrder);
+        // Filter saved order to only include existing characters
+        const validOrder = user.characterOrder.filter(id => 
+          userCharacters.some((char: any) => char.id === id)
+        );
+        
+        // Add any new characters not in the saved order
+        const newCharacterIds = userCharacters
+          .map((char: any) => char.id)
+          .filter(id => !validOrder.includes(id));
+        
+        const finalOrder = [...validOrder, ...newCharacterIds];
+        
+        if (JSON.stringify(finalOrder) !== JSON.stringify(characterOrder)) {
+          console.log('Setting character order from user preferences:', finalOrder);
+          setCharacterOrder(finalOrder);
         }
       } else {
         // Create initial order from current characters
@@ -355,6 +405,10 @@ export default function UserSettings() {
           setCharacterOrder(initialOrder);
         }
       }
+    } else if (userCharacters.length === 0 && characterOrder.length > 0) {
+      // Clear character order if no characters available
+      console.log('Clearing character order - no characters available');
+      setCharacterOrder([]);
     }
   }, [userCharacters, user?.characterOrder]);
 
