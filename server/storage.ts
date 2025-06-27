@@ -724,7 +724,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllCharacters(includeSystem = false): Promise<Character[]> {
-    let query = supabase.from('characters').select('*');
+    let query = supabase
+      .from('characters')
+      .select('*')
+      .eq('is_active', true)
+      .is('death_date', null);
+
     if (!includeSystem) {
       query = query.or('is_system.eq.false,is_system.is.null');
     }
