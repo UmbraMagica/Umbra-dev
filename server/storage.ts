@@ -1201,7 +1201,7 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
 
-    return data || [];
+    return (data || []);
   }
 
   async getActiveCharacters(): Promise<any[]> {
