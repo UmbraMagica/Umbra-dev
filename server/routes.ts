@@ -38,6 +38,9 @@ function verifyJwt(token: string) {
   }
 }
 
+// Paměťová mapa pro sledování online uživatelů
+const userActivityMap = new Map();
+
 function requireAuth(req: any, res: any, next: any) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer ')) {
@@ -49,6 +52,13 @@ function requireAuth(req: any, res: any, next: any) {
     return res.status(401).json({ message: "Invalid token" });
   }
   req.user = payload;
+  // Sledování aktivity uživatele
+  userActivityMap.set(req.user.id, {
+    id: req.user.id,
+    username: req.user.username,
+    role: req.user.role,
+    lastActiveAt: Date.now()
+  });
   console.log("Decoded JWT user:", req.user);
   next();
 }
@@ -2314,22 +2324,10 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   app.get("/api/admin/online-users", requireAdmin, async (_req, res) => {
     try {
-      const onlineCharacters = await storage.getCharactersInChatRooms();
-      if (!onlineCharacters || !Array.isArray(onlineCharacters)) {
-        return res.json([]);
-      }
-      // Vytvoř mapu unikátních uživatelů
-      const userMap = new Map();
-      for (const char of onlineCharacters) {
-        if (char && char.userId && char.user) {
-          userMap.set(char.userId, {
-            id: char.userId,
-            username: char.user.username,
-            role: char.user.role || 'user',
-          });
-        }
-      }
-      res.json(Array.from(userMap.values()));
+      const now = Date.now();
+      const ONLINE_WINDOW = 10 * 60 * 1000; // 10 minut
+      const onlineUsers = Array.from(userActivityMap.values()).filter(u => now - u.lastActiveAt <= ONLINE_WINDOW);
+      res.json(onlineUsers);
     } catch (error) {
       console.error("[admin/online-users] Error:", error);
       res.status(500).json({ message: "Nepodařilo se načíst online uživatele" });

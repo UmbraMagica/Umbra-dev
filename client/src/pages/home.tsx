@@ -913,29 +913,30 @@ export default function Home() {
                 </Badge>
               </h3>
               <div className="space-y-3">
-                {onlineCharacters.map((character) => (
-                  <div key={character.id} className="flex items-center space-x-3">
-                    <CharacterAvatar character={character} size="sm" />
-                    <div className="flex-1">
-                      <div className="space-y-1">
-                        <button
-                          onClick={() => setLocation(`/characters/${character.id}`)}
-                          className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
-                        >
-                          <p className="text-sm font-medium text-foreground hover:text-primary">{character.fullName}</p>
-                        </button>
-                        <button
-                          onClick={() => setLocation(`/chat/room/${character.roomId}`)}
-                          className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
-                        >
-                          <p className="text-xs text-muted-foreground hover:text-primary">v {character.location}</p>
-                        </button>
+                {onlineCharacters.length > 0 ? (
+                  onlineCharacters.map((character) => (
+                    <div key={character.id} className="flex items-center space-x-3">
+                      <CharacterAvatar character={character} size="sm" />
+                      <div className="flex-1">
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => setLocation(`/characters/${character.id}`)}
+                            className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
+                          >
+                            <p className="text-sm font-medium text-foreground hover:text-primary">{character.fullName}</p>
+                          </button>
+                          <button
+                            onClick={() => setLocation(`/chat/room/${character.roomId}`)}
+                            className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
+                          >
+                            <p className="text-xs text-muted-foreground hover:text-primary">v {character.location}</p>
+                          </button>
+                        </div>
                       </div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  </div>
-                ))}
-                {onlineCharacters.length === 0 && (
+                  ))
+                ) : (
                   <p className="text-sm text-muted-foreground text-center py-4">
                     Žádné postavy nejsou online
                   </p>
