@@ -330,23 +330,21 @@ export default function UserSettings() {
   const authCharacters = user?.characters || [];
   
   // Merge characters from both sources and deduplicate
-  const allCharacters = [...allUserCharacters, ...authCharacters];
-  const uniqueCharacters = allCharacters.filter((char, index, self) => 
-    index === self.findIndex(c => c.id === char.id)
+  const allCharacters = [
+    ...(Array.isArray(allUserCharacters) ? allUserCharacters : []),
+    ...(Array.isArray(authCharacters) ? authCharacters : [])
+  ];
+  const uniqueCharacters = allCharacters.filter((char, index, self) =>
+    char &&
+    typeof char.id === 'number' &&
+    self.findIndex(c => c && c.id === char.id) === index
   );
 
   // Filter only alive characters (not in cemetery) and exclude system characters
-  const userCharacters = Array.isArray(uniqueCharacters) 
+  const userCharacters = Array.isArray(uniqueCharacters)
     ? uniqueCharacters.filter((char: any) => {
-        console.log('[user-settings] Checking character:', char);
-        return char && 
-               typeof char === 'object' && 
-               !char.deathDate && 
-               !char.isSystem && 
-               char.userId === user?.id &&
-               char.firstName &&
-               char.lastName;
-      }) 
+        return char && !char.deathDate && !char.isSystem;
+      })
     : [];
 
   console.log('[user-settings] Final userCharacters:', userCharacters);

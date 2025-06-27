@@ -81,16 +81,8 @@ function OwlPost() {
   // Extract characters array safely
   const userCharacters = (() => {
     if (!userCharactersData) return [];
-
-    // Handle different response formats from server
-    if (Array.isArray(userCharactersData)) {
-      return userCharactersData;
-    }
-
-    if (userCharactersData.characters && Array.isArray(userCharactersData.characters)) {
-      return userCharactersData.characters;
-    }
-
+    if (Array.isArray(userCharactersData)) return userCharactersData;
+    if (userCharactersData.characters && Array.isArray(userCharactersData.characters)) return userCharactersData.characters;
     console.warn('[OwlPost] userCharacters is not array:', userCharactersData);
     return [];
   })();
@@ -109,15 +101,8 @@ function OwlPost() {
   // Extract owl post characters array safely
   const owlPostCharacters = (() => {
     if (!owlPostCharactersData) return [];
-
-    if (Array.isArray(owlPostCharactersData)) {
-      return owlPostCharactersData;
-    }
-
-    if (owlPostCharactersData.characters && Array.isArray(owlPostCharactersData.characters)) {
-      return owlPostCharactersData.characters;
-    }
-
+    if (Array.isArray(owlPostCharactersData)) return owlPostCharactersData;
+    if (owlPostCharactersData.characters && Array.isArray(owlPostCharactersData.characters)) return owlPostCharactersData.characters;
     console.warn('[OwlPost] owlPostCharacters is not array:', owlPostCharactersData);
     return [];
   })();

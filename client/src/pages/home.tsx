@@ -80,7 +80,7 @@ export default function Home() {
   });
 
   // Get user's characters from the auth user object
-  const userCharacters = user?.characters || [];
+  const userCharacters = Array.isArray(user?.characters) ? user.characters : [];
 
   // Get all characters for birthday display
   const { data: allCharacters = [] } = useQuery({
