@@ -47,7 +47,7 @@ interface CharacterRequest {
   school?: string;
   description?: string;
   reason: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "returned";
   reviewNote?: string;
   createdAt: string;
 }
@@ -682,6 +682,8 @@ export default function UserSettings() {
         return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Schváleno</Badge>;
       case "rejected":
         return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Zamítnuto</Badge>;
+      case "returned":
+        return <Badge variant="outline">{status}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -1557,13 +1559,14 @@ export default function UserSettings() {
                               <div className="flex items-center gap-2">
                                 <Badge variant={
                                   request.status === 'pending' ? 'default' :
-                                  request.status === 'approved' ? 'secondary' : 'destructive'
+                                  request.status === 'approved' ? 'secondary' :
+                                  request.status === 'returned' ? 'outline' :
+                                  'destructive'
                                 }>
-                                  {request.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
-                                  {request.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
-                                  {request.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
-                                  {request.status === 'pending' ? 'Čeká na vyřízení' :
-                                   request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
+                                  {request.status === 'pending' && 'Čeká na vyřízení'}
+                                  {request.status === 'approved' && 'Schváleno'}
+                                  {request.status === 'rejected' && 'Zamítnuto'}
+                                  {request.status === 'returned' && 'Vráceno k úpravě'}
                                 </Badge>
                                 <span className="font-medium">
                                   {request.request_type === 'apartment' ? 'Byt' :
