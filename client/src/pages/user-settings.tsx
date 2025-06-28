@@ -1565,42 +1565,47 @@ export default function UserSettings() {
                               </Badge>
                               <span className="font-medium">
                                 {request.requestType === 'apartment' ? 'Byt' :
-                                 request.requestType === 'house' ? 'Dům' : 'Kolej'}
+                                 request.requestType === 'house' ? 'Dům' :
+                                 request.requestType === 'mansion' ? 'Sídlo' :
+                                 request.requestType === 'shared' ? 'Sdílené' :
+                                 request.requestType === 'dormitory' ? 'Pokoj na koleji' : 'Jiné'}
                               </span>
                               {request.size && <span className="text-muted-foreground">({request.size})</span>}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {formatDate(request.createdAt)}
+                              {formatDate(request.created_at)}
                             </div>
                           </div>
-                          
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div>
-                              <span className="font-medium">Postava:</span> {request.character?.firstName} {request.character?.lastName}
+                              <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
                             </div>
                             <div>
                               <span className="font-medium">Umístění:</span> {
-                                request.location === 'area' ? request.selectedArea : request.customLocation
+                                request.location === 'area' ? request.selectedArea :
+                                request.location === 'custom' ? request.customLocation :
+                                request.location === 'dormitory' ? 'Kolej' : ''
                               }
                             </div>
                           </div>
-
+                          {request.housingName && (
+                            <div className="text-sm">
+                              <span className="font-medium">Název bydlení:</span> {request.housingName}
+                            </div>
+                          )}
                           {request.assignedAddress && (
                             <div className="text-sm">
                               <span className="font-medium text-green-600">Přidělená adresa:</span> {request.assignedAddress}
                             </div>
                           )}
-
                           <div className="text-sm">
                             <span className="font-medium">Popis:</span> {request.description}
                           </div>
-
                           {request.reviewNote && (
                             <div className="text-sm">
                               <span className="font-medium">Poznámka administrátora:</span> {request.reviewNote}
                             </div>
                           )}
-
                           {request.status === 'pending' && (
                             <div className="flex justify-end mt-4">
                               <Button

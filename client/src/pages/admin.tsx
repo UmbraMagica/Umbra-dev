@@ -1720,7 +1720,7 @@ export default function Admin() {
                         <div>
                           <div className="flex items-center gap-2">
                             <p className="font-medium text-foreground">
-                              {request.firstName} {request.middleName ? `${request.middleName} ` : ''}{request.lastName}
+                              {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
                             </p>
                             <Badge variant="secondary" className="text-xs">Postava</Badge>
                           </div>
@@ -1741,7 +1741,13 @@ export default function Admin() {
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground">
-                            Požádáno: {request.createdAt ? new Date(request.createdAt).toLocaleDateString('cs-CZ') : '-'}
+                            Požádáno: {new Date(request.created_at).toLocaleDateString('cs-CZ', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
                           </p>
                         </div>
                       </div>
