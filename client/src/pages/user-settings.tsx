@@ -1623,6 +1623,40 @@ export default function UserSettings() {
                                 <span className="font-medium">Uživatel:</span> {request.user.username} ({request.user.email})
                               </div>
                             )}
+                            {/* Akce pro vrácené žádosti */}
+                            {request.status === 'returned' && (
+                              <div className="flex gap-2 mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // Otevřít formulář pro úpravu žádosti (implementace závisí na zbytku kódu)
+                                    setShowHousingForm(true);
+                                    setHousingType(request.request_type);
+                                    setLocationType(request.location);
+                                    // Předvyplnit formulář hodnotami žádosti
+                                    housingForm.reset({
+                                      requestType: request.request_type,
+                                      size: request.size,
+                                      location: request.location,
+                                      customLocation: request.custom_location,
+                                      selectedArea: request.selected_area,
+                                      description: request.description,
+                                    });
+                                  }}
+                                >
+                                  Upravit žádost
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => deleteHousingRequestMutation.mutate(request.id)}
+                                  disabled={deleteHousingRequestMutation.isPending}
+                                >
+                                  Stáhnout žádost
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
