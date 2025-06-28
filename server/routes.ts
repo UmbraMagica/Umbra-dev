@@ -2466,6 +2466,32 @@ export async function registerRoutes(app: Express): Promise<void> {
         .single();
       if (error || !request) return res.status(404).json({ message: 'Request not found' });
       if (request.status !== 'pending') return res.status(400).json({ message: 'Request is not pending' });
+      // --- ZALOŽENÍ CHATU ---
+      const chatName = request.housing_name;
+      const chatCategoryName = request.selected_area;
+      const chatPassword = request.housing_password || null;
+      const chatDescription = request.description || null;
+      let chatCategoryId = null;
+      if (chatCategoryName) {
+        const category = await storage.getChatCategoryByName(chatCategoryName);
+        if (category) chatCategoryId = category.id;
+      }
+      // Ověření, zda už chat v oblasti se stejným názvem existuje
+      let existingRoom = null;
+      if (chatName && chatCategoryId) {
+        existingRoom = await storage.getChatRoomByName(chatName);
+        if (!(existingRoom && existingRoom.categoryId === chatCategoryId)) {
+          // Založ nový privátní chat
+          await storage.createChatRoom({
+            name: chatName,
+            categoryId: chatCategoryId,
+            isPublic: false,
+            password: chatPassword,
+            description: chatDescription,
+          });
+        }
+      }
+      // --- KONEC ZALOŽENÍ CHATU ---
       const { data: updated, error: updError } = await supabase
         .from('housing_requests')
         .update({ status: 'approved', assigned_address: assignedAddress, review_note: reviewNote || null, reviewed_by: req.user!.id, reviewed_at: new Date().toISOString() })
