@@ -1805,6 +1805,14 @@ export default function Admin() {
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {Array.isArray(housingRequests) && housingRequests.map((request: any) => {
                     console.log('ADMIN HOUSING REQUEST', request);
+                    let adresa = '';
+                    if (request.location === 'area' && request.selected_area) {
+                      adresa = request.category ? `${request.category} / ${request.selected_area}` : request.selected_area;
+                    } else if (request.location === 'custom' && request.custom_location) {
+                      adresa = request.custom_location;
+                    } else if (request.location === 'dormitory') {
+                      adresa = 'Kolej';
+                    }
                     return (
                       <div key={request.id} className="p-4 bg-muted/30 rounded-lg border-l-4 border-l-green-500">
                         <div className="flex items-center justify-between">
