@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema } from "../shared/schema";
+import { registrationSchema, loginSchema, insertHousingRequestSchema } from "../shared/schema";
 import { z } from "zod";
 import multer from "multer";
 import sharp from "sharp";
@@ -2331,6 +2331,169 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("[admin/online-users] Error:", error);
       res.status(500).json({ message: "Nepodařilo se načíst online uživatele" });
+    }
+  });
+
+  // === HOUSING REQUESTS USER ENDPOINTS ===
+  app.post('/api/housing-requests', requireAuth, async (req, res) => {
+    try {
+      const parsed = insertHousingRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: 'Invalid data', errors: parsed.error.errors });
+      }
+      const data = parsed.data;
+      // userId z tokenu, characterId z dat
+      const userId = req.user!.id;
+      // Ověř, že postava patří uživateli
+      const character = await storage.getCharacter(data.characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ message: 'Character does not belong to user' });
+      }
+      // Vytvoř žádost
+      const request = await supabase
+        .from('housing_requests')
+        .insert({ ...data, user_id: userId, status: 'pending' })
+        .select()
+        .single();
+      if (request.error) {
+        return res.status(500).json({ message: 'Failed to create request', error: request.error });
+      }
+      res.status(201).json(request.data);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // Seznam žádostí aktuálního uživatele
+  app.get('/api/housing-requests/my', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const { data, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      if (error) return res.status(500).json({ message: 'Failed to fetch requests', error });
+      res.json(data || []);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // Smazání žádosti (pouze pokud patří uživateli a není schválená)
+  app.delete('/api/housing-requests/:id', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const requestId = Number(req.params.id);
+      if (!requestId) return res.status(400).json({ message: 'Invalid request id' });
+      const { data: request, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (error || !request) return res.status(404).json({ message: 'Request not found' });
+      if (request.user_id !== userId) return res.status(403).json({ message: 'Forbidden' });
+      if (request.status === 'approved') return res.status(400).json({ message: 'Cannot delete approved request' });
+      const { error: delError } = await supabase
+        .from('housing_requests')
+        .delete()
+        .eq('id', requestId);
+      if (delError) return res.status(500).json({ message: 'Failed to delete request', error: delError });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // === HOUSING REQUESTS ADMIN ENDPOINTS ===
+  app.get('/api/admin/housing-requests', requireAdmin, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) return res.status(500).json({ message: 'Failed to fetch requests', error });
+      res.json(data || []);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // Schválení žádosti
+  app.post('/api/admin/housing-requests/:id/approve', requireAdmin, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      const { assignedAddress, reviewNote } = req.body;
+      if (!assignedAddress) return res.status(400).json({ message: 'Missing assignedAddress' });
+      const { data: request, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (error || !request) return res.status(404).json({ message: 'Request not found' });
+      if (request.status !== 'pending') return res.status(400).json({ message: 'Request is not pending' });
+      const { data: updated, error: updError } = await supabase
+        .from('housing_requests')
+        .update({ status: 'approved', assigned_address: assignedAddress, review_note: reviewNote || null, reviewed_by: req.user!.id, reviewed_at: new Date().toISOString() })
+        .eq('id', requestId)
+        .select()
+        .single();
+      if (updError) return res.status(500).json({ message: 'Failed to approve request', error: updError });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // Vrácení žádosti k úpravě
+  app.post('/api/admin/housing-requests/:id/return', requireAdmin, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      const { reviewNote } = req.body;
+      if (!reviewNote) return res.status(400).json({ message: 'Missing reviewNote' });
+      const { data: request, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (error || !request) return res.status(404).json({ message: 'Request not found' });
+      if (request.status !== 'pending') return res.status(400).json({ message: 'Request is not pending' });
+      const { data: updated, error: updError } = await supabase
+        .from('housing_requests')
+        .update({ status: 'returned', review_note: reviewNote, reviewed_by: req.user!.id, reviewed_at: new Date().toISOString() })
+        .eq('id', requestId)
+        .select()
+        .single();
+      if (updError) return res.status(500).json({ message: 'Failed to return request', error: updError });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
+
+  // Zamítnutí žádosti
+  app.post('/api/admin/housing-requests/:id/reject', requireAdmin, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      const { reviewNote } = req.body;
+      if (!reviewNote) return res.status(400).json({ message: 'Missing reviewNote' });
+      const { data: request, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (error || !request) return res.status(404).json({ message: 'Request not found' });
+      if (request.status !== 'pending') return res.status(400).json({ message: 'Request is not pending' });
+      const { data: updated, error: updError } = await supabase
+        .from('housing_requests')
+        .update({ status: 'rejected', review_note: reviewNote, reviewed_by: req.user!.id, reviewed_at: new Date().toISOString() })
+        .eq('id', requestId)
+        .select()
+        .single();
+      if (updError) return res.status(500).json({ message: 'Failed to reject request', error: updError });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
     }
   });
 }
