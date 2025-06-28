@@ -1550,19 +1550,30 @@ export default function UserSettings() {
               {housingRequests && housingRequests.length > 0 ? (
                 <div className="space-y-3">
                   {housingRequests.map((request: any) => {
-                    console.log('USER HOUSING REQUEST', request);
+                    // Sestavení umístění
+                    let umisteni = '';
+                    if (request.location === 'area' && request.selected_area) {
+                      umisteni = request.category ? `${request.category} / ${request.selected_area}` : request.selected_area;
+                    } else if (request.location === 'custom' && request.custom_location) {
+                      umisteni = request.custom_location;
+                    } else if (request.location === 'dormitory') {
+                      umisteni = 'Kolej';
+                    }
                     return (
                       <Card key={request.id} className="border-l-4 border-l-accent">
                         <CardContent className="pt-6">
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <Badge variant={
-                                  request.status === 'pending' ? 'default' :
-                                  request.status === 'approved' ? 'secondary' :
-                                  request.status === 'returned' ? 'outline' :
-                                  'destructive'
-                                }>
+                                <Badge
+                                  variant={
+                                    request.status === 'pending' ? 'default' :
+                                    request.status === 'approved' ? 'secondary' :
+                                    request.status === 'returned' ? 'outline' :
+                                    'destructive'
+                                  }
+                                  className={request.status === 'returned' ? 'border-orange-500 text-orange-400' : ''}
+                                >
                                   {request.status === 'pending' && 'Čeká na vyřízení'}
                                   {request.status === 'approved' && 'Schváleno'}
                                   {request.status === 'rejected' && 'Zamítnuto'}
@@ -1586,11 +1597,7 @@ export default function UserSettings() {
                                 <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
                               </div>
                               <div>
-                                <span className="font-medium">Umístění:</span> {
-                                  request.location === 'area' ? request.selected_area :
-                                  request.location === 'custom' ? request.custom_location :
-                                  request.location === 'dormitory' ? 'Kolej' : ''
-                                }
+                                <span className="font-medium">Umístění:</span> {umisteni}
                               </div>
                             </div>
                             {request.housing_name && (
