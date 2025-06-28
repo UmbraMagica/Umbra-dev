@@ -1835,7 +1835,7 @@ export default function Admin() {
                     // Sestavení adresy
                     let adresa = '';
                     if (request.location === 'area' && request.selected_area) {
-                      adresa = request.selected_area;
+                      adresa = request.category ? `${request.category} / ${request.selected_area}` : request.selected_area;
                     } else if (request.location === 'custom' && request.custom_location) {
                       adresa = request.custom_location;
                     } else if (request.location === 'dormitory') {
