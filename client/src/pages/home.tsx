@@ -829,8 +829,8 @@ export default function Home() {
                         <Circle className="h-3 w-3 mr-1 fill-current" />
                         Online
                       </Badge>
-                      {lastChatRoom?.room && (
-                        <div className="mt-4">
+                      <div className="mt-4">
+                        {lastChatRoom?.room ? (
                           <Button
                             variant="outline"
                             size="sm"
@@ -840,8 +840,12 @@ export default function Home() {
                             <MessageCircle className="h-3 w-3 mr-2" />
                             Poslední chat: {lastChatRoom.room.name}
                           </Button>
-                        </div>
-                      )}
+                        ) : (
+                          <div className="text-xs text-muted-foreground">
+                            Poslední chat: —
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </CardContent>

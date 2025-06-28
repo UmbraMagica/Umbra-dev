@@ -1134,6 +1134,25 @@ export default function Admin() {
             </CardContent>
           </Card>
         </div>
+        {/* Pravidla a průvodci: Wikipedie */}
+        <div className="mb-8">
+          <Card className="bg-gradient-to-br from-yellow-100/40 to-yellow-200/40 border-yellow-400/30">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-yellow-700 mb-1">Pravidla a průvodci</h3>
+                <a
+                  href="https://umbramagica.wizardy.cz/doku.php?id=start"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-yellow-800 underline font-medium hover:text-yellow-600"
+                >
+                  Wikipedie Umbra Magica
+                </a>
+              </div>
+              <div className="text-3xl">📖</div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Správa magického vlivu */}
         <Card className="mb-8">
