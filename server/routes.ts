@@ -2342,17 +2342,18 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(400).json({ message: 'Invalid data', errors: parsed.error.errors });
       }
       const data = parsed.data;
-      // userId z tokenu, characterId z dat
       const userId = req.user!.id;
       // Ověř, že postava patří uživateli
       const character = await storage.getCharacter(data.characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ message: 'Character does not belong to user' });
       }
+      // Převod na snake_case
+      const snakeData = toSnake(data);
       // Vytvoř žádost
       const request = await supabase
         .from('housing_requests')
-        .insert({ ...data, user_id: userId, status: 'pending' })
+        .insert({ ...snakeData, user_id: userId, status: 'pending' })
         .select()
         .single();
       if (request.error) {
@@ -2496,4 +2497,16 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: 'Server error', error: error?.message });
     }
   });
+}
+
+// Pokud není v souboru dostupná funkce toSnake, přidám ji na konec souboru:
+function toSnake(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(toSnake);
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [
+      k.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`),
+      toSnake(v)
+    ])
+  );
 }
