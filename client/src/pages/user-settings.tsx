@@ -1547,87 +1547,77 @@ export default function UserSettings() {
               {/* Existing Housing Requests */}
               {housingRequests && housingRequests.length > 0 ? (
                 <div className="space-y-3">
-                  {housingRequests.map((request: any) => (
-                    <Card key={request.id} className="border-l-4 border-l-accent">
-                      <CardContent className="pt-6">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Badge variant={
-                                request.status === 'pending' ? 'default' :
-                                request.status === 'approved' ? 'secondary' : 'destructive'
-                              }>
-                                {request.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
-                                {request.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
-                                {request.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
-                                {request.status === 'pending' ? 'Čeká na vyřízení' :
-                                 request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
-                              </Badge>
-                              <span className="font-medium">
-                                {request.requestType === 'apartment' ? 'Byt' :
-                                 request.requestType === 'house' ? 'Dům' :
-                                 request.requestType === 'mansion' ? 'Sídlo' :
-                                 request.requestType === 'shared' ? 'Sdílené' :
-                                 request.requestType === 'dormitory' ? 'Pokoj na koleji' : 'Jiné'}
-                              </span>
-                              {request.size && <span className="text-muted-foreground">({request.size})</span>}
+                  {housingRequests.map((request: any) => {
+                    console.log('USER HOUSING REQUEST', request);
+                    return (
+                      <Card key={request.id} className="border-l-4 border-l-accent">
+                        <CardContent className="pt-6">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Badge variant={
+                                  request.status === 'pending' ? 'default' :
+                                  request.status === 'approved' ? 'secondary' : 'destructive'
+                                }>
+                                  {request.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
+                                  {request.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
+                                  {request.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
+                                  {request.status === 'pending' ? 'Čeká na vyřízení' :
+                                   request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
+                                </Badge>
+                                <span className="font-medium">
+                                  {request.request_type === 'apartment' ? 'Byt' :
+                                   request.request_type === 'house' ? 'Dům' :
+                                   request.request_type === 'mansion' ? 'Sídlo' :
+                                   request.request_type === 'shared' ? 'Sdílené' :
+                                   request.request_type === 'dormitory' ? 'Pokoj na koleji' : 'Jiné'}
+                                </span>
+                                {request.size && <span className="text-muted-foreground">({request.size})</span>}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {formatDate(request.created_at)}
+                              </div>
                             </div>
-                            <div className="text-sm text-muted-foreground">
-                              {formatDate(request.created_at)}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
+                              </div>
+                              <div>
+                                <span className="font-medium">Umístění:</span> {
+                                  request.location === 'area' ? request.selected_area :
+                                  request.location === 'custom' ? request.custom_location :
+                                  request.location === 'dormitory' ? 'Kolej' : ''
+                                }
+                              </div>
                             </div>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
-                            </div>
-                            <div>
-                              <span className="font-medium">Umístění:</span> {
-                                request.location === 'area' ? request.selectedArea :
-                                request.location === 'custom' ? request.customLocation :
-                                request.location === 'dormitory' ? 'Kolej' : ''
-                              }
-                            </div>
-                          </div>
-                          {request.housingName && (
+                            {request.housing_name && (
+                              <div className="text-sm">
+                                <span className="font-medium">Název bydlení:</span> {request.housing_name}
+                              </div>
+                            )}
+                            {request.assigned_address && (
+                              <div className="text-sm">
+                                <span className="font-medium text-green-600">Přidělená adresa:</span> {request.assigned_address}
+                              </div>
+                            )}
                             <div className="text-sm">
-                              <span className="font-medium">Název bydlení:</span> {request.housingName}
+                              <span className="font-medium">Popis:</span> {request.description}
                             </div>
-                          )}
-                          {request.assignedAddress && (
-                            <div className="text-sm">
-                              <span className="font-medium text-green-600">Přidělená adresa:</span> {request.assignedAddress}
-                            </div>
-                          )}
-                          <div className="text-sm">
-                            <span className="font-medium">Popis:</span> {request.description}
+                            {request.review_note && (
+                              <div className="text-sm">
+                                <span className="font-medium">Poznámka administrátora:</span> {request.review_note}
+                              </div>
+                            )}
+                            {request.user && (
+                              <div className="text-xs text-muted-foreground">
+                                <span className="font-medium">Uživatel:</span> {request.user.username} ({request.user.email})
+                              </div>
+                            )}
                           </div>
-                          {request.reviewNote && (
-                            <div className="text-sm">
-                              <span className="font-medium">Poznámka administrátora:</span> {request.reviewNote}
-                            </div>
-                          )}
-                          {request.status === 'pending' && (
-                            <div className="flex justify-end mt-4">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  if (confirm("Opravdu chcete stáhnout tuto žádost? Tato akce je nevratná.")) {
-                                    deleteHousingRequestMutation.mutate(request.id);
-                                  }
-                                }}
-                                disabled={deleteHousingRequestMutation.isPending}
-                                className="text-xs"
-                              >
-                                <Trash2 className="h-3 w-3 mr-1" />
-                                Stáhnout žádost
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-8">
