@@ -1722,7 +1722,20 @@ export default function Admin() {
                             <p className="font-medium text-foreground">
                               {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
                             </p>
-                            <Badge variant="secondary" className="text-xs">Postava</Badge>
+                            <Badge
+                              variant={
+                                request.status === 'pending' ? 'default' :
+                                request.status === 'approved' ? 'secondary' :
+                                request.status === 'returned' ? 'outline' :
+                                'destructive'
+                              }
+                              className={request.status === 'returned' ? 'border-orange-500 text-orange-400' : ''}
+                            >
+                              {request.status === 'pending' && 'Čeká na vyřízení'}
+                              {request.status === 'approved' && 'Schváleno'}
+                              {request.status === 'rejected' && 'Zamítnuto'}
+                              {request.status === 'returned' && 'Vráceno k úpravě'}
+                            </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Uživatel: <b>{request.user?.username}</b> • Škola: <b>{request.school || 'Neznámá škola'}</b>
