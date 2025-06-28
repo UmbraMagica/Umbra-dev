@@ -2444,6 +2444,16 @@ export async function registerRoutes(app: Express): Promise<void> {
         .select()
         .single();
       if (updError) return res.status(500).json({ message: 'Failed to approve request', error: updError });
+      // Odeslání sovy
+      const housingAdmin = await storage.getCharacterByName('Správa', 'ubytování');
+      if (housingAdmin && request.character_id) {
+        await storage.sendOwlPostMessage(
+          housingAdmin.id,
+          request.character_id,
+          'Žádost o bydlení schválena',
+          `Vaše žádost o bydlení byla schválena. Adresa: ${assignedAddress}${reviewNote ? '\nPoznámka: ' + reviewNote : ''}`
+        );
+      }
       res.json(updated);
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error?.message });
@@ -2470,6 +2480,16 @@ export async function registerRoutes(app: Express): Promise<void> {
         .select()
         .single();
       if (updError) return res.status(500).json({ message: 'Failed to return request', error: updError });
+      // Odeslání sovy
+      const housingAdmin = await storage.getCharacterByName('Správa', 'ubytování');
+      if (housingAdmin && request.character_id) {
+        await storage.sendOwlPostMessage(
+          housingAdmin.id,
+          request.character_id,
+          'Žádost o bydlení vrácena k úpravě',
+          `Vaše žádost o bydlení byla vrácena k úpravě.\nPoznámka: ${reviewNote}`
+        );
+      }
       res.json(updated);
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error?.message });
@@ -2496,6 +2516,16 @@ export async function registerRoutes(app: Express): Promise<void> {
         .select()
         .single();
       if (updError) return res.status(500).json({ message: 'Failed to reject request', error: updError });
+      // Odeslání sovy
+      const housingAdmin = await storage.getCharacterByName('Správa', 'ubytování');
+      if (housingAdmin && request.character_id) {
+        await storage.sendOwlPostMessage(
+          housingAdmin.id,
+          request.character_id,
+          'Žádost o bydlení zamítnuta',
+          `Vaše žádost o bydlení byla zamítnuta.\nPoznámka: ${reviewNote}`
+        );
+      }
       res.json(updated);
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error?.message });
