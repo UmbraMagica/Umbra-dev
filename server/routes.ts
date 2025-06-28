@@ -2369,15 +2369,28 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.get('/api/housing-requests/my', requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
+      // Zkusím různé varianty joinu na postavu
       const { data, error } = await supabase
         .from('housing_requests')
         .select(`
           *,
-          character:character_id (id, first_name, last_name)
+          character:character_id (id, first_name, middle_name, last_name)
         `)
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
-      if (error) return res.status(500).json({ message: 'Failed to fetch requests', error });
+      if (error) {
+        // Fallback: zkusím jiný název klíče
+        const { data: altData, error: altError } = await supabase
+          .from('housing_requests')
+          .select(`
+            *,
+            character:characterId (id, first_name, middle_name, last_name)
+          `)
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+        if (altError) return res.status(500).json({ message: 'Failed to fetch requests', error: altError });
+        return res.json(altData || []);
+      }
       res.json(data || []);
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error?.message });
@@ -2412,6 +2425,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // === HOUSING REQUESTS ADMIN ENDPOINTS ===
   app.get('/api/admin/housing-requests', requireAdmin, async (req, res) => {
     try {
+      // Zkusím různé varianty joinu na postavu
       const { data, error } = await supabase
         .from('housing_requests')
         .select(`
@@ -2420,7 +2434,19 @@ export async function registerRoutes(app: Express): Promise<void> {
           character:character_id (id, first_name, middle_name, last_name)
         `)
         .order('created_at', { ascending: false });
-      if (error) return res.status(500).json({ message: 'Failed to fetch requests', error });
+      if (error) {
+        // Fallback: zkusím jiný název klíče
+        const { data: altData, error: altError } = await supabase
+          .from('housing_requests')
+          .select(`
+            *,
+            user:user_id (id, username, email),
+            character:characterId (id, first_name, middle_name, last_name)
+          `)
+          .order('created_at', { ascending: false });
+        if (altError) return res.status(500).json({ message: 'Failed to fetch requests', error: altError });
+        return res.json(altData || []);
+      }
       res.json(data || []);
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error?.message });

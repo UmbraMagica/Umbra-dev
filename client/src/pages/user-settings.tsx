@@ -1573,12 +1573,12 @@ export default function UserSettings() {
                               {request.size && <span className="text-muted-foreground">({request.size})</span>}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {formatDate(request.createdAt)}
+                              {formatDate(request.created_at)}
                             </div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div>
-                              <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name} {request.character?.last_name}
+                              <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
                             </div>
                             <div>
                               <span className="font-medium">Umístění:</span> {
