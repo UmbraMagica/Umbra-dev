@@ -45,6 +45,7 @@ import {
   ArrowDown,
   ChevronRight
 } from "lucide-react";
+import * as React from "react";
 
 interface AdminUser {
   id: number;
@@ -717,7 +718,7 @@ export default function Admin() {
 
   // Helper functions for hierarchical expansion
   const toggleCategoryExpansion = (categoryId: number) => {
-    setExpandedCategories(prev => {
+    setExpandedCategories((prev: Set<number>) => {
       const newSet = new Set(prev);
       if (newSet.has(categoryId)) {
         newSet.delete(categoryId);
@@ -729,7 +730,7 @@ export default function Admin() {
   };
 
   const toggleAreaExpansion = (areaId: number) => {
-    setExpandedAreas(prev => {
+    setExpandedAreas((prev: Set<number>) => {
       const newSet = new Set(prev);
       if (newSet.has(areaId)) {
         newSet.delete(areaId);
@@ -1817,7 +1818,7 @@ export default function Admin() {
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {Array.isArray(housingRequests) && housingRequests.map((request: any) => {
-                    console.log('ADMIN HOUSING REQUEST', request);
+                    // Sestavení adresy: kategorie / oblast
                     let adresa = '';
                     if (request.location === 'area' && request.selected_area) {
                       adresa = request.category ? `${request.category} / ${request.selected_area}` : request.selected_area;
@@ -1852,9 +1853,34 @@ export default function Admin() {
                                    request.request_type === 'house' ? 'Dům' : 
                                    request.request_type === 'mansion' ? 'Sídlo' : 'Vlastní'}
                                 </Badge>
+                                {/* Badge pro status žádosti */}
+                                {request.status === 'returned' ? (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs border-orange-500 text-orange-600 bg-orange-100 font-bold"
+                                  >
+                                    Vráceno k úpravě
+                                  </Badge>
+                                ) : (
+                                  <Badge
+                                    variant={
+                                      request.status === 'pending' ? 'default' :
+                                      request.status === 'approved' ? 'secondary' :
+                                      'destructive'
+                                    }
+                                    className="text-xs"
+                                  >
+                                    {request.status === 'pending' && 'Čeká na vyřízení'}
+                                    {request.status === 'approved' && 'Schváleno'}
+                                    {request.status === 'rejected' && 'Zamítnuto'}
+                                  </Badge>
+                                )}
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                Uživatel: {request.user?.username} • Email: {request.user?.email} • Místo: {request.location}
+                                <span className="font-medium">Postava:</span> {request.character?.first_name} {request.character?.middle_name ? request.character.middle_name + ' ' : ''}{request.character?.last_name}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                <span className="font-medium">Adresa:</span> {adresa}
                               </p>
                               <p className="text-xs text-muted-foreground">
                                 Požádáno: {new Date(request.created_at).toLocaleDateString('cs-CZ', { 
@@ -1871,12 +1897,6 @@ export default function Admin() {
                                   {request.housing_name && request.size && ' • '}
                                   {request.size && `Velikost: ${request.size}`}
                                 </p>
-                              )}
-                              {request.selected_area && (
-                                <p className="text-xs text-muted-foreground">Oblast: {request.selected_area}</p>
-                              )}
-                              {request.custom_location && (
-                                <p className="text-xs text-muted-foreground">Vlastní adresa: {request.custom_location}</p>
                               )}
                               {request.assigned_address && (
                                 <p className="text-xs text-green-600">Přidělená adresa: {request.assigned_address}</p>
