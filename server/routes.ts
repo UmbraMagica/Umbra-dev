@@ -2411,7 +2411,11 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const { data, error } = await supabase
         .from('housing_requests')
-        .select('*')
+        .select(`
+          *,
+          user:user_id (id, username, email),
+          character:character_id (id, first_name, last_name)
+        `)
         .order('created_at', { ascending: false });
       if (error) return res.status(500).json({ message: 'Failed to fetch requests', error });
       res.json(data || []);
