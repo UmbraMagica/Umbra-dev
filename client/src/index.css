@@ -1,25 +1,29 @@
 /* Import Google Fonts first - must be at the very top */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:wght@300;400;600&display=swap');
+
+body {
+  font-family: 'Crimson Pro', serif;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
+ --background: 42 44% 95%; /* pergamenově světlá */
+  --foreground: 25 20% 20%; /* tmavě hnědá */
+  --muted: 42 30% 85%;      /* na pozadí textových polí */
+  --muted-foreground: 25 15% 45%;
   --popover: 0 0% 100%;
   --popover-foreground: 20 14.3% 4.1%;
   --card: 0 0% 100%;
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 262 83% 58%; /* #7C3AED */
+  --primary: 0 70% 45%;     /* vínová #991B1B */
   --primary-foreground: 0 0% 98%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
+  --secondary: 137 27% 36%; /* temně zelená #2F5E4E */
+  --secondary-foreground: 0 0% 98%;
   --accent: 43 96% 56%; /* #F59E0B */
   --accent-foreground: 0 0% 98%;
   --destructive: 0 84.2% 60.2%;
@@ -32,9 +36,9 @@
   --rpg-secondary: 271 91% 65%; /* #A855F7 */
   --rpg-accent: 43 96% 56%; /* #F59E0B */
   --rpg-success: 158 64% 52%; /* #10B981 */
-  --rpg-dark: 217 33% 17%; /* #111827 */
-  --rpg-medium: 217 19% 27%; /* #1F2937 */
-  --rpg-gray: 215 25% 27%; /* #374151 */
+  --rpg-dark: 26 20% 15%;   /* tmavě hnědá */
+  --rpg-medium: 36 20% 25%; /* světle hnědá */
+  --rpg-gray: 35 15% 60%;   /* tlumená béžová */
 }
 
 .dark {
