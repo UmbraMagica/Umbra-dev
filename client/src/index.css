@@ -70,15 +70,17 @@
     margin: 0;
     padding: 0;
 
-    font-family: 'Crimson Pro', serif;
-  font-size: 25px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 18px;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 
-  /* Pergamenová textura */
-  background-image: url("data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3e%3cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3e%3cfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3' stitchTiles='stitch' /%3e%3c/filter%3e%3crect width='200' height='200' filter='url(%23noise)' fill='none' /%3e%3c/svg%3e");
-  background-repeat: repeat;
-  background-size: 200px 200px;
+  background-image:
+    url("data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3e%3cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3e%3cfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3' stitchTiles='stitch' /%3e%3c/filter%3e%3crect width='200' height='200' filter='url(%23noise)' fill='none' /%3e%3c/svg%3e"),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3e%3cdefs%3e%3cpattern id='magicSymbols' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3e%3ccircle cx='20' cy='20' r='3' fill='%234b6f44' fill-opacity='0.07'/%3e%3cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%237e5e3b' stroke-width='1' stroke-opacity='0.09'/%3e%3ccircle cx='20' cy='20' r='1' fill='%237e5e3b' fill-opacity='0.1'/%3e%3cpath d='M16 16 L24 24 M24 16 L16 24' stroke='%234b6f44' stroke-width='0.7' stroke-opacity='0.07'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='120' height='120' fill='%23f5f0e6'/%3e%3crect width='120' height='120' fill='url(%23magicSymbols)' /%3e%3c/svg%3e");
+
+  background-repeat: repeat, repeat;
+  background-size: 200px 200px, 40px 40px;
   }
 
   h1, h2, h3, h4, h5, h6 {
