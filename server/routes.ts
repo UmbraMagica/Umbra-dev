@@ -1365,6 +1365,30 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Get spells for a character
+  app.get("/api/characters/:id/spells", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    try {
+      // Check if character belongs to user or is admin
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== req.user!.id) {
+          return res.status(403).json({ message: "Character not found or access denied" });
+        }
+      }
+
+      const spells = await storage.getCharacterSpells(characterId);
+      res.json(spells || []);
+    } catch (error) {
+      console.error("Error fetching character spells:", error);
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
   // Add spell to character
   app.post("/api/characters/:id/spells", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);
