@@ -1818,16 +1818,19 @@ export default function Admin() {
                 ) : (
                   <ChevronUp className="ml-auto h-4 w-4" />
                 )}
+                {/* Ikona knížky pro přehled ubytování postav, pouze při rozbalené sekci */}
+                {!isHousingManagementCollapsed && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-2"
+                    title="Přehled ubytování postav"
+                    onClick={e => { e.stopPropagation(); setShowHousingOverview(true); }}
+                  >
+                    <Book className="h-5 w-5 text-accent" />
+                  </Button>
+                )}
               </CardTitle>
-              {/* Proklik na přehled ubytování postav */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-2 ml-2"
-                onClick={e => { e.stopPropagation(); setShowHousingOverview(true); }}
-              >
-                Přehled ubytování postav
-              </Button>
             </CardHeader>
 
             {!isHousingManagementCollapsed && (
@@ -1949,57 +1952,103 @@ export default function Admin() {
                             </div>
                             {/* Akční tlačítka pouze pro pending/returned */}
                             {(request.status === 'pending' || request.status === 'returned') && (
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setExpandedHousingRequest(request.id);
-                                    setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'approve' });
-                                  }}
-                                  disabled={approveHousingMutation.isPending}
-                                  className="text-green-400 hover:text-green-300"
-                                  title="Schválit žádost o bydlení"
-                                >
-                                  Schválit
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setExpandedHousingRequest(request.id);
-                                    setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'return' });
-                                  }}
-                                  disabled={rejectHousingMutation.isPending}
-                                  className="text-orange-400 hover:text-orange-300"
-                                  title="Vrátit žádost k úpravě"
-                                >
-                                  Vrátit
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    if (confirmRejectId === request.id) {
-                                      setConfirmRejectId(null);
+                              <>
+                                <div className="flex items-center space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
                                       setExpandedHousingRequest(request.id);
-                                      setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'reject' });
-                                    } else {
-                                      setConfirmRejectId(request.id);
-                                      setTimeout(() => setConfirmRejectId(null), 4000);
+                                      setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'approve' });
+                                    }}
+                                    disabled={approveHousingMutation.isPending}
+                                    className="text-green-400 hover:text-green-300"
+                                    title="Schválit žádost o bydlení"
+                                  >
+                                    Schválit
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setExpandedHousingRequest(request.id);
+                                      setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'return' });
+                                    }}
+                                    disabled={rejectHousingMutation.isPending}
+                                    className="text-orange-400 hover:text-orange-300"
+                                    title="Vrátit žádost k úpravě"
+                                  >
+                                    Vrátit
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      if (confirmRejectId === request.id) {
+                                        setConfirmRejectId(null);
+                                        setExpandedHousingRequest(request.id);
+                                        setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'reject' });
+                                      } else {
+                                        setConfirmRejectId(request.id);
+                                        setTimeout(() => setConfirmRejectId(null), 4000);
+                                      }
+                                    }}
+                                    disabled={denyHousingMutation.isPending}
+                                    className={
+                                      confirmRejectId === request.id
+                                        ? "text-red-600 border-red-600 bg-red-100 font-bold animate-pulse"
+                                        : "text-red-400 hover:text-red-300"
                                     }
-                                  }}
-                                  disabled={denyHousingMutation.isPending}
-                                  className={
-                                    confirmRejectId === request.id
-                                      ? "text-red-600 border-red-600 bg-red-100 font-bold animate-pulse"
-                                      : "text-red-400 hover:text-red-300"
-                                  }
-                                  title="Zamítnout žádost o bydlení"
-                                >
-                                  {confirmRejectId === request.id ? "Potvrdit zamítnutí" : "Zamítnout"}
-                                </Button>
-                              </div>
+                                    title="Zamítnout žádost o bydlení"
+                                  >
+                                    {confirmRejectId === request.id ? "Potvrdit zamítnutí" : "Zamítnout"}
+                                  </Button>
+                                </div>
+                                {/* Rozbalovací formulář pro schválení žádosti */}
+                                {expandedHousingRequest === request.id && housingFormData.action === 'approve' && (
+                                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                    <div className="mb-2">
+                                      <label className="block text-sm font-medium mb-1">
+                                        Přidělená adresa <span className="text-red-500">*</span>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className="w-full border rounded px-2 py-1"
+                                        value={housingFormData.assignedAddress}
+                                        onChange={e => setHousingFormData(f => ({ ...f, assignedAddress: e.target.value }))}
+                                        placeholder="Zadejte přidělenou adresu"
+                                      />
+                                    </div>
+                                    <div className="mb-2">
+                                      <label className="block text-sm font-medium mb-1">Poznámka administrátora</label>
+                                      <textarea
+                                        className="w-full border rounded px-2 py-1"
+                                        value={housingFormData.reviewNote}
+                                        onChange={e => setHousingFormData(f => ({ ...f, reviewNote: e.target.value }))}
+                                        placeholder="Volitelná poznámka k žádosti"
+                                        rows={2}
+                                      />
+                                    </div>
+                                    <div className="flex gap-2 mt-2">
+                                      <Button
+                                        variant="default"
+                                        size="sm"
+                                        onClick={() => handleHousingAction(request.id, 'approve')}
+                                        disabled={approveHousingMutation.isPending}
+                                      >
+                                        Potvrdit schválení
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setExpandedHousingRequest(null)}
+                                      >
+                                        Zavřít
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                           {/* ... zbytek renderu ... */}
@@ -2614,7 +2663,7 @@ export default function Admin() {
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {nonSystemCharacters
-                    .filter((character: any) => character.deathDate ?? character.death_date)
+                    .filter((character: any) => character.deathDate)
                     .map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
                       <div className="flex items-center space-x-3">
@@ -2627,7 +2676,7 @@ export default function Admin() {
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {character.school || 'Neznámá škola'} •
-                            Zemřel(a): {(character.deathDate ?? character.death_date) ? new Date(character.deathDate ?? character.death_date).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
+                            Zemřel(a): {character.deathDate ? new Date(character.deathDate).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
                           </p>
                           {character.deathReason && (
                             <p className="text-xs text-red-400 italic">Důvod: {character.deathReason}</p>
@@ -2639,7 +2688,7 @@ export default function Admin() {
                       </Badge>
                     </div>
                   ))}
-                  {nonSystemCharacters.filter((c: any) => c.deathDate ?? c.death_date).length === 0 && (
+                  {nonSystemCharacters.filter((c: any) => c.deathDate).length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Hřbitov je prázdný
                     </div>
