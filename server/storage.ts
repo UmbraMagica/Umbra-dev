@@ -776,7 +776,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
-    const { data, error } = await supabase.from('chat_rooms').insert([insertChatRoom]).select().single();
+    // Převod isPublic na is_public
+    const dbRoom = { ...insertChatRoom };
+    if (typeof dbRoom.isPublic !== 'undefined') {
+      dbRoom.is_public = dbRoom.isPublic;
+      delete dbRoom.isPublic;
+    }
+    const { data, error } = await supabase.from('chat_rooms').insert([dbRoom]).select().single();
     if (error) throw new Error(error.message);
     return toCamel(data);
   }

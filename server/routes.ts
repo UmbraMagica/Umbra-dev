@@ -2271,7 +2271,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           await storage.createChatRoom({
             name: chatName,
             category_id: chatCategoryId,
-            isPublic: false,
+            is_public: false,
             password: chatPassword,
             description: chatDescription,
           });
