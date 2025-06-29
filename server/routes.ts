@@ -2372,6 +2372,48 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ message: 'Server error', error: error?.message });
     }
   });
+
+  // === HOUSING REQUESTS USER ENDPOINTS ===
+  app.put('/api/housing-requests/:id', requireAuth, async (req, res) => {
+    try {
+      const requestId = Number(req.params.id);
+      if (!requestId) return res.status(400).json({ message: 'Invalid request id' });
+      const userId = req.user!.id;
+      // Najdi žádost
+      const { data: request, error } = await supabase
+        .from('housing_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      if (error || !request) return res.status(404).json({ message: 'Request not found' });
+      if (request.user_id !== userId) return res.status(403).json({ message: 'Forbidden' });
+      if (request.status !== 'returned') return res.status(400).json({ message: 'Only returned requests can be edited' });
+      // Validace vstupních dat
+      const parsed = insertHousingRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: 'Invalid data', errors: parsed.error.errors });
+      }
+      const data = parsed.data;
+      // Ověř, že postava patří uživateli
+      const character = await storage.getCharacter(data.characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ message: 'Character does not belong to user' });
+      }
+      // Převod na snake_case
+      const snakeData = toSnake(data);
+      // Proveď update a nastav status zpět na pending
+      const { data: updated, error: updError } = await supabase
+        .from('housing_requests')
+        .update({ ...snakeData, status: 'pending', reviewed_by: null, reviewed_at: null, review_note: null })
+        .eq('id', requestId)
+        .select()
+        .single();
+      if (updError) return res.status(500).json({ message: 'Failed to update request', error: updError });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error?.message });
+    }
+  });
 }
 
 // Pokud není v souboru dostupná funkce toSnake, přidám ji na konec souboru:

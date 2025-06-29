@@ -115,6 +115,9 @@ export default function UserSettings() {
   const [highlightColor, setHighlightColor] = useState('yellow');
   const [narratorColor, setNarratorColor] = useState('purple');
   
+  // Stav pro editaci žádosti o bydlení
+  const [editingHousingRequestId, setEditingHousingRequestId] = useState<number | null>(null);
+  
   const toggleSection = (section: string) => {
     setCollapsedSections(prev => ({
       ...prev,
@@ -501,7 +504,36 @@ export default function UserSettings() {
     },
   });
 
-
+  // PUT mutation pro update žádosti
+  const updateHousingRequestMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number, data: HousingRequestForm }) => {
+      const response = await apiRequest("PUT", `${API_URL}/api/housing-requests/${id}` , data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Nepodařilo se upravit žádost o bydlení");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
+      toast({
+        title: "Žádost upravena",
+        description: "Vaše žádost o bydlení byla upravena a čeká na nové schválení.",
+      });
+      housingForm.reset();
+      setShowHousingForm(false);
+      setEditingHousingRequestId(null);
+      setHousingType(null);
+      setLocationType(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při úpravě žádosti",
+        description: error.message || "Nepodařilo se upravit žádost o bydlení",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Change password mutation
   const changePasswordMutation = useMutation({
@@ -564,8 +596,10 @@ export default function UserSettings() {
 
   const onHousingSubmit = (data: HousingRequestForm) => {
     if (!user) return;
-    
-    // Pro ubytovnu automaticky nastavíme požadované hodnoty
+    if (editingHousingRequestId) {
+      updateHousingRequestMutation.mutate({ id: editingHousingRequestId, data });
+      return;
+    }
     if (housingType === 'dormitory') {
       createHousingRequestMutation.mutate({
         ...data,
@@ -575,12 +609,11 @@ export default function UserSettings() {
         description: 'Žádost o pokoj na ubytovně',
       });
     } else if (housingType === 'shared') {
-      // Pro sdílené bydlení nastavíme speciální hodnoty
       createHousingRequestMutation.mutate({
         ...data,
         requestType: 'shared',
         location: 'shared',
-        size: null, // Není relevantní pro sdílené bydlení
+        size: null,
       });
     } else {
       createHousingRequestMutation.mutate(data);
@@ -1534,6 +1567,7 @@ export default function UserSettings() {
                               setShowHousingForm(false);
                               setHousingType(null);
                               setLocationType(null);
+                              setEditingHousingRequestId(null);
                               housingForm.reset();
                             }}
                           >
@@ -1630,11 +1664,10 @@ export default function UserSettings() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    // Otevřít formulář pro úpravu žádosti (implementace závisí na zbytku kódu)
                                     setShowHousingForm(true);
                                     setHousingType(request.request_type);
                                     setLocationType(request.location);
-                                    // Předvyplnit formulář hodnotami žádosti
+                                    setEditingHousingRequestId(request.id);
                                     housingForm.reset({
                                       requestType: request.request_type,
                                       size: request.size,

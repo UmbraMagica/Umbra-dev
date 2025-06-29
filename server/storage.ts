@@ -1225,7 +1225,7 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
 
-    return (data || []);
+    return toCamel(data || []);
   }
 
   async getActiveCharacters(): Promise<any[]> {

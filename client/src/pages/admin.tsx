@@ -1014,6 +1014,9 @@ export default function Admin() {
   // Stav pro dvojí potvrzení zamítnutí žádosti o bydlení
   const [confirmRejectId, setConfirmRejectId] = useState<number | null>(null);
 
+  // 1. Stav pro přehled ubytování postav
+  const [showHousingOverview, setShowHousingOverview] = useState(false);
+
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -1816,6 +1819,15 @@ export default function Admin() {
                   <ChevronUp className="ml-auto h-4 w-4" />
                 )}
               </CardTitle>
+              {/* Proklik na přehled ubytování postav */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2 ml-2"
+                onClick={e => { e.stopPropagation(); setShowHousingOverview(true); }}
+              >
+                Přehled ubytování postav
+              </Button>
             </CardHeader>
 
             {!isHousingManagementCollapsed && (
@@ -3135,6 +3147,81 @@ export default function Admin() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Přehled ubytování postav */}
+      {showHousingOverview && (
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+              <Book className="h-5 w-5 text-accent mr-2" />
+              Přehled ubytování postav
+              <Button variant="ghost" size="sm" className="ml-4" onClick={() => setShowHousingOverview(false)}>
+                Zavřít
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2 pr-4">Postava</th>
+                    <th className="text-left py-2 pr-4">Typ ubytování</th>
+                    <th className="text-left py-2">Adresa / Název</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(nonSystemCharacters) && nonSystemCharacters.length > 0 ? (
+                    // 4. Seřadím postavy abecedně podle příjmení a jména
+                    [...nonSystemCharacters].sort((a, b) => {
+                      const aLast = (a.lastName || a.last_name || '').toLowerCase();
+                      const bLast = (b.lastName || b.last_name || '').toLowerCase();
+                      if (aLast < bLast) return -1;
+                      if (aLast > bLast) return 1;
+                      const aFirst = (a.firstName || a.first_name || '').toLowerCase();
+                      const bFirst = (b.firstName || b.first_name || '').toLowerCase();
+                      return aFirst.localeCompare(bFirst);
+                    }).map((char: any) => {
+                      let typ = '-';
+                      let adresa = '-';
+                      if (char.residence_type === 'dormitory' || char.residence_type === 'ubytovna') {
+                        typ = 'Ubytovna';
+                        adresa = char.residence_name || 'Ubytovna';
+                      } else if (char.residence_type === 'shared') {
+                        typ = 'Sdílené';
+                        adresa = char.residence_name || char.residence || '-';
+                      } else if (char.residence_type === 'apartment') {
+                        typ = 'Byt';
+                        adresa = char.residence_name || char.residence || '-';
+                      } else if (char.residence_type === 'house') {
+                        typ = 'Dům';
+                        adresa = char.residence_name || char.residence || '-';
+                      } else if (char.residence_type === 'mansion') {
+                        typ = 'Sídlo';
+                        adresa = char.residence_name || char.residence || '-';
+                      } else if (char.residence) {
+                        typ = 'Vlastní';
+                        adresa = char.residence;
+                      }
+                      return (
+                        <tr key={char.id} className="border-b last:border-0">
+                          <td className="py-2 pr-4 font-medium text-foreground">
+                            {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
+                          </td>
+                          <td className="py-2 pr-4">{typ}</td>
+                          <td className="py-2">{adresa}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr><td colSpan={3} className="py-4 text-center text-muted-foreground">Žádné postavy</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
