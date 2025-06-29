@@ -41,7 +41,6 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { MoonPhase } from "@/components/MoonPhase";
 import { apiFetch } from "@/lib/queryClient";
 import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
-import ChatCategories from "./chat-categories";
 
 interface OnlineCharacter {
   id: number;
@@ -800,9 +799,6 @@ export default function Home() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Chaty a oblasti */}
-            <ChatCategories />
           </div>
 
           <div className="space-y-8">

@@ -1014,9 +1014,6 @@ export default function Admin() {
   // Stav pro dvojí potvrzení zamítnutí žádosti o bydlení
   const [confirmRejectId, setConfirmRejectId] = useState<number | null>(null);
 
-  // 1. Stav pro přehled ubytování postav
-  const [showHousingOverview, setShowHousingOverview] = useState(false);
-
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -1436,10 +1433,10 @@ export default function Admin() {
                 <div className="space-y-3">
                   <h3 className="text-lg font-medium">Seznam uživatelů</h3>
                   {Array.isArray(users) && users
-                    .sort((a: any, b: any) => {
-                      if (a.role === 'admin' && b.role !== 'admin') return -1;
-                      if (a.role !== 'admin' && b.role === 'admin') return 1;
-                      return a.username.localeCompare(b.username, 'cs');
+                    .sort((a, b) => {
+                      const aFirst = (a.firstName || a.first_name || '').toLowerCase();
+                      const bFirst = (b.firstName || b.first_name || '').toLowerCase();
+                      return aFirst.localeCompare(bFirst, 'cs');
                     })
                     .map((user: any) => (
                     <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -1817,18 +1814,6 @@ export default function Admin() {
                   <ChevronDown className="ml-auto h-4 w-4" />
                 ) : (
                   <ChevronUp className="ml-auto h-4 w-4" />
-                )}
-                {/* Ikona knížky pro přehled ubytování postav, pouze při rozbalené sekci */}
-                {!isHousingManagementCollapsed && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="ml-2"
-                    title="Přehled ubytování postav"
-                    onClick={e => { e.stopPropagation(); setShowHousingOverview(true); }}
-                  >
-                    <Book className="h-5 w-5 text-accent" />
-                  </Button>
                 )}
               </CardTitle>
             </CardHeader>
@@ -3254,55 +3239,6 @@ export default function Admin() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Přehled ubytování postav */}
-      {showHousingOverview && (
-        <Dialog open={showHousingOverview} onOpenChange={setShowHousingOverview}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Přehled ubytování postav</DialogTitle>
-            </DialogHeader>
-            <div className="max-h-96 overflow-y-auto space-y-2">
-              {Array.isArray(nonSystemCharacters) && nonSystemCharacters.length > 0 ? (
-                [...nonSystemCharacters]
-                  .filter(char => char.residence || char.residence_name)
-                  .sort((a, b) => {
-                    const aLast = (a.lastName || a.last_name || '').toLowerCase();
-                    const bLast = (b.lastName || b.last_name || '').toLowerCase();
-                    if (aLast < bLast) return -1;
-                    if (aLast > bLast) return 1;
-                    const aFirst = (a.firstName || a.first_name || '').toLowerCase();
-                    const bFirst = (b.firstName || b.first_name || '').toLowerCase();
-                    return aFirst.localeCompare(bFirst);
-                  })
-                  .map((char: any) => {
-                    let address = char.residence || char.residence_name || '';
-                    // Pokud má character.residence_area_id nebo residence_area, najdi parent kategorii
-                    if (char.residence_area_id || char.residence_area) {
-                      const area = Array.isArray(chatCategories) ? chatCategories.find((cat: any) => cat.id === char.residence_area_id || cat.name === char.residence_area) : null;
-                      if (area) {
-                        let parent = area.parentId ? chatCategories.find((cat: any) => cat.id === area.parentId) : null;
-                        address = parent ? `${parent.name} / ${area.name}` : area.name;
-                      }
-                    }
-                    return (
-                      <div key={char.id} className="flex flex-col border-b last:border-0 pb-2">
-                        <span className="font-medium text-foreground">
-                          {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
-                        </span>
-                        <span className="text-muted-foreground text-sm">
-                          {address}
-                        </span>
-                      </div>
-                    );
-                  })
-              ) : (
-                <div className="text-center text-muted-foreground py-4">Žádné postavy s ubytováním</div>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }
