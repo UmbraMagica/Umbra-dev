@@ -915,24 +915,17 @@ export class DatabaseStorage implements IStorage {
       }
     });
 
-    // === OPRAVA: Rekurzivně přiřadit rooms do všech podkategorií ===
-    function assignRoomsRecursively(category: any) {
-      if (!category || !category.children) return;
-      category.children.forEach((child: any) => {
-        // Přidej rooms do child (oblast)
-        child.rooms = child.rooms || [];
-        filteredRooms.forEach(room => {
-          const camelRoom = toCamel(room);
-          if (camelRoom.category_id === child.id) {
-            child.rooms.push(camelRoom);
-          }
-        });
-        // Rekurzivně pro další úroveň
-        assignRoomsRecursively(child);
-      });
-    }
-    rootCategories.forEach(assignRoomsRecursively);
-    // === KONEC OPRAVY ===
+    // Third pass: build hierarchy
+    categories?.forEach(cat => {
+      const category = categoryMap.get(cat.id);
+      // OPRAVA: použij parentId z camelCase převodu (toCamel)
+      const parentId = category.parentId;
+      if (parentId && categoryMap.has(parentId)) {
+        categoryMap.get(parentId).children.push(category);
+      } else {
+        rootCategories.push(category);
+      }
+    });
 
     return rootCategories;
   }
