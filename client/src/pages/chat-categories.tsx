@@ -114,57 +114,62 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-2 ml-4 space-y-2">
-          {subCategory.rooms && Array.isArray(subCategory.rooms) ? subCategory.rooms.map((room) => (
-            room.isPublic ? (
-              <a
-                key={room.id}
-                href={`/chat/room/${room.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start h-auto p-3"
-                  asChild
-                >
-                  <span className="text-left flex flex-col">
-                    <span className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      <span className="font-medium">{room.name}</span>
-                    </span>
-                    {room.description && (
-                      <span className="text-sm text-muted-foreground mt-1">
-                        {room.description}
+          {subCategory.rooms && Array.isArray(subCategory.rooms) && subCategory.rooms.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm text-muted-foreground">Chatovací místnosti</h4>
+              {subCategory.rooms.map((room) => (
+                room.isPublic ? (
+                  <a
+                    key={room.id}
+                    href={`/chat/room/${room.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full"
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start h-auto p-3"
+                      asChild
+                    >
+                      <span className="text-left flex flex-col">
+                        <span className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          <span className="font-medium">{room.name}</span>
+                        </span>
+                        {room.description && (
+                          <span className="text-sm text-muted-foreground mt-1">
+                            {room.description}
+                          </span>
+                        )}
                       </span>
-                    )}
-                  </span>
-                </Button>
-              </a>
-            ) : (
-              <Button
-                key={room.id}
-                variant="outline"
-                size="sm"
-                className="w-full justify-start h-auto p-3"
-                onClick={() => handleRoomClick(room)}
-              >
-                <div className="text-left">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span className="font-medium">{room.name}</span>
-                    {!room.isPublic && <Lock className="h-3 w-3 text-yellow-600" />}
-                  </div>
-                  {room.description && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {room.description}
-                    </p>
-                  )}
-                </div>
-              </Button>
-            )
-          )) : null}
+                    </Button>
+                  </a>
+                ) : (
+                  <Button
+                    key={room.id}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start h-auto p-3"
+                    onClick={() => handleRoomClick(room)}
+                  >
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span className="font-medium">{room.name}</span>
+                        {!room.isPublic && <Lock className="h-3 w-3 text-yellow-600" />}
+                      </div>
+                      {room.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {room.description}
+                        </p>
+                      )}
+                    </div>
+                  </Button>
+                )
+              ))}
+            </div>
+          )}
         </CollapsibleContent>
       </Collapsible>
 
