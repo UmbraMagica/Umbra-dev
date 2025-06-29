@@ -2266,11 +2266,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       let existingRoom = null;
       if (chatName && chatCategoryId) {
         existingRoom = await storage.getChatRoomByName(chatName);
-        if (!(existingRoom && existingRoom.categoryId === chatCategoryId)) {
+        if (!(existingRoom && existingRoom.category_id === chatCategoryId)) {
           // Založ nový privátní chat
           await storage.createChatRoom({
             name: chatName,
-            categoryId: chatCategoryId,
+            category_id: chatCategoryId,
             isPublic: false,
             password: chatPassword,
             description: chatDescription,

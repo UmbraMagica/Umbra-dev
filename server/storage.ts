@@ -849,7 +849,7 @@ export class DatabaseStorage implements IStorage {
     // Zkontrolujeme, jestli má podkategorie nebo místnosti
     const { data: children } = await supabase.from('chat_categories').select('id').eq('parentId', id);
     if (children && children.length > 0) return false;
-    const { data: rooms } = await supabase.from('chat_rooms').select('id').eq('categoryId', id);
+    const { data: rooms } = await supabase.from('chat_rooms').select('id').eq('category_id', id);
     if (rooms && rooms.length > 0) return false;
     const { error } = await supabase.from('chat_categories').delete().eq('id', id);
     return !error;
@@ -910,8 +910,8 @@ export class DatabaseStorage implements IStorage {
     // Second pass: assign rooms to categories
     filteredRooms?.forEach(room => {
       const camelRoom = toCamel(room);
-      if (camelRoom.categoryId && categoryMap.has(camelRoom.categoryId)) {
-        categoryMap.get(camelRoom.categoryId).rooms.push(camelRoom);
+      if (camelRoom.category_id && categoryMap.has(camelRoom.category_id)) {
+        categoryMap.get(camelRoom.category_id).rooms.push(camelRoom);
       }
     });
 

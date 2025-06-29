@@ -3275,16 +3275,27 @@ export default function Admin() {
                     const bFirst = (b.firstName || b.first_name || '').toLowerCase();
                     return aFirst.localeCompare(bFirst);
                   })
-                  .map((char: any) => (
-                    <div key={char.id} className="flex flex-col border-b last:border-0 pb-2">
-                      <span className="font-medium text-foreground">
-                        {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
-                      </span>
-                      <span className="text-muted-foreground text-sm">
-                        {char.residence || char.residence_name}
-                      </span>
-                    </div>
-                  ))
+                  .map((char: any) => {
+                    let address = char.residence || char.residence_name || '';
+                    // Pokud má character.residence_area_id nebo residence_area, najdi parent kategorii
+                    if (char.residence_area_id || char.residence_area) {
+                      const area = Array.isArray(chatCategories) ? chatCategories.find((cat: any) => cat.id === char.residence_area_id || cat.name === char.residence_area) : null;
+                      if (area) {
+                        let parent = area.parentId ? chatCategories.find((cat: any) => cat.id === area.parentId) : null;
+                        address = parent ? `${parent.name} / ${area.name}` : area.name;
+                      }
+                    }
+                    return (
+                      <div key={char.id} className="flex flex-col border-b last:border-0 pb-2">
+                        <span className="font-medium text-foreground">
+                          {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
+                        </span>
+                        <span className="text-muted-foreground text-sm">
+                          {address}
+                        </span>
+                      </div>
+                    );
+                  })
               ) : (
                 <div className="text-center text-muted-foreground py-4">Žádné postavy s ubytováním</div>
               )}
