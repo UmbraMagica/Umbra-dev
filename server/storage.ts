@@ -907,17 +907,26 @@ export class DatabaseStorage implements IStorage {
       categoryMap.set(category.id, category);
     });
 
-    // Second pass: assign rooms to categories (rekurzivně i do children)
+    // === OPRAVA: build hierarchy podle parentId (camelCase) ===
+    categories?.forEach(cat => {
+      const category = categoryMap.get(toCamel(cat).id);
+      const parentId = category.parentId;
+      if (parentId && categoryMap.has(parentId)) {
+        categoryMap.get(parentId).children.push(category);
+      } else {
+        rootCategories.push(category);
+      }
+    });
+
+    // Rekurzivně přiřaď rooms do všech kategorií i oblastí
     function assignRoomsRecursively(category: any) {
       if (!category) return;
-      // Přiřaď rooms do této kategorie
-      filteredRooms?.forEach(room => {
+      filteredRooms?.forEach((room: any) => {
         const camelRoom = toCamel(room);
         if (camelRoom.categoryId === category.id) {
           category.rooms.push(camelRoom);
         }
       });
-      // Rekurzivně do children
       if (category.children && category.children.length > 0) {
         category.children.forEach((child: any) => assignRoomsRecursively(child));
       }
