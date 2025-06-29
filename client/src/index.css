@@ -1,4 +1,3 @@
-/* Import Google Fonts first - must be at the very top */
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Cinzel:wght@400;600&display=swap');
 
 @tailwind base;
@@ -6,105 +5,61 @@
 @tailwind utilities;
 
 :root {
-  --background: 35 20% 94%;          /* velmi světlá béžová */
-  --foreground: 100 10% 20%;         /* tmavší zelená */
-  --muted: 35 15% 80%;               /* světle béžová */
-  --muted-foreground: 35 30% 50%;   /* tlumená hnědá */
-  
-  --primary: 135 35% 35%;            /* mechová zelená #4B6F44 */
-  --primary-foreground: 35 80% 95%; /* světlá béžová */
-  
-  --secondary: 35 40% 40%;           /* hnědá #7E5E3B */
-  --secondary-foreground: 35 80% 95%; /* světlá béžová */
-  
-  --accent: 45 80% 50%;              /* zlatá #D4AF37 */
-  --accent-foreground: 35 90% 95%;  /* světlá béžová */
-  
-  --destructive: 350 60% 35%;        /* vínová #6C1B1B */
-  --destructive-foreground: 35 90% 95%;
-  
-  --rpg-dark: 220 45% 20%;           /* noční modř #2C3E50 */
-  --rpg-medium: 135 35% 30%;         /* tmavá mechová */
-  --rpg-gray: 40 15% 65%;            /* béžová */
-
-  --ring: 135 35% 35%;
+  --background: 35 20% 94%;          /* béžová pergamen */
+  --foreground: 100 10% 20%;         /* tmavá mechová */
+  --primary: 135 35% 35%;            /* mechová zelená */
+  --secondary: 35 40% 40%;           /* zemitá hnědá */
+  --accent: 45 80% 50%;              /* zlatá */
+  --destructive: 350 60% 35%;        /* vínová */
   --radius: 0.5rem;
 }
 
-.dark {
-  --background: 220 45% 20%;          /* noční modř */
-  --foreground: 35 80% 95%;           /* světlá béžová */
-  --muted: 135 35% 30%;               /* tmavá mechová */
-  --muted-foreground: 40 15% 65%;     /* béžová */
-  
-  --primary: 135 35% 45%;             /* mechová zelená */
-  --primary-foreground: 35 90% 95%;   /* světlá béžová */
-  
-  --secondary: 35 40% 40%;            /* hnědá */
-  --secondary-foreground: 35 90% 95%; /* světlá béžová */
-  
-  --accent: 45 80% 50%;               /* zlatá */
-  --accent-foreground: 35 90% 95%;   /* světlá béžová */
-  
-  --destructive: 350 60% 35%;         /* vínová */
-  --destructive-foreground: 35 90% 95%;
-  
-  --ring: 45 80% 50%;
-  --radius: 0.5rem;
+body {
+  font-family: 'Crimson Pro', serif;
+  font-size: 18px;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+
+  /* přímý background s kouzelnými symboly */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3e%3cdefs%3e%3cpattern id='magicSymbols' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3e%3ccircle cx='20' cy='20' r='3' fill='%234b6f44' fill-opacity='0.1'/%3e%3cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%237e5e3b' stroke-width='1' stroke-opacity='0.12'/%3e%3ccircle cx='20' cy='20' r='1' fill='%237e5e3b' fill-opacity='0.12'/%3e%3cpath d='M16 16 L24 24 M24 16 L16 24' stroke='%234b6f44' stroke-width='0.7' stroke-opacity='0.1'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='120' height='120' fill='%23f5f0e6'/%3e%3crect width='120' height='120' fill='url(%23magicSymbols)' /%3e%3c/svg%3e");
+  background-repeat: repeat;
+  background-size: 40px 40px;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-serif antialiased rpg-bg-texture;
-    font-family: 'Crimson Pro', serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cinzel', serif;
-  }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  color: hsl(var(--primary));
+  margin-bottom: 1rem;
 }
 
-@layer components {
-  .rpg-bg-pattern {
-    background-image: url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%234B6F44' fill-opacity='0.05'%3e%3ccircle cx='30' cy='30' r='2'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
-  }
+button {
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+}
 
-  .rpg-gradient-bg {
-    background: linear-gradient(135deg, hsl(var(--rpg-dark)), hsl(var(--rpg-medium)), hsl(var(--rpg-dark)));
-  }
+.button-primary {
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+  color: hsl(var(--background));
+  padding: 0.75rem 1.5rem;
+  border: none;
+  transition: transform 0.2s ease;
+}
 
-  .rpg-card {
-    @apply bg-background/90 backdrop-blur-sm rounded-2xl border border-primary/30 shadow-2xl;
-  }
+.button-primary:hover {
+  transform: scale(1.05);
+}
 
-  .rpg-input {
-    @apply w-full px-4 py-3 border border-muted bg-background/70 placeholder:text-muted-foreground text-foreground rounded-lg;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
-  }
+.button-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--background));
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius);
+  transition: background-color 0.3s ease;
+}
 
-  .rpg-button-primary {
-    @apply w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg;
-    @apply text-primary-foreground bg-gradient-to-r from-primary to-accent;
-    @apply hover:from-accent hover:to-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent;
-    @apply transition-all duration-200 transform hover:scale-105;
-  }
-
-  .rpg-button-secondary {
-    @apply py-3 px-4 border border-muted text-foreground rounded-lg;
-    @apply hover:bg-muted transition-all duration-200;
-  }
-
-  .fantasy-font {
-    font-family: 'Cinzel', serif;
-  }
-
-  .rpg-bg-texture {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3e%3cdefs%3e%3cpattern id='magicSymbols' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3e%3ccircle cx='20' cy='20' r='3' fill='%234b6f44' fill-opacity='0.05'/%3e%3cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%237e5e3b' stroke-width='1' stroke-opacity='0.07'/%3e%3ccircle cx='20' cy='20' r='1' fill='%237e5e3b' fill-opacity='0.08'/%3e%3cpath d='M16 16 L24 24 M24 16 L16 24' stroke='%234b6f44' stroke-width='0.7' stroke-opacity='0.06'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='120' height='120' fill='%23f5f0e6'/%3e%3crect width='120' height='120' fill='url(%23magicSymbols)' /%3e%3c/svg%3e");
-    background-repeat: repeat;
-    background-size: 40px 40px;
-  }
+.button-secondary:hover {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground, 98%));
 }
