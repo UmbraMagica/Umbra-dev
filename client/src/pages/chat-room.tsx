@@ -154,7 +154,7 @@ export default function ChatRoom() {
   const userCharactersFiltered = Array.isArray(userCharactersRaw) ? 
     userCharactersRaw.filter(char => 
       char && 
-      !char.deathDate && 
+      !(char.deathDate ?? char.death_date) && 
       !char.isSystem &&
       char.userId === user?.id
     ) : [];
@@ -651,7 +651,7 @@ export default function ChatRoom() {
         });
         return;
       }
-      if (selectedCharacter.deathDate) {
+      if ((selectedCharacter.deathDate ?? selectedCharacter.death_date)) {
         toast({
           title: "Chyba",
           description: "Nelze odesílat zprávy s mrtvou postavou",
@@ -700,29 +700,31 @@ export default function ChatRoom() {
 
   // Přítomnost v místnosti (room_presence)
   useEffect(() => {
-    if (!selectedCharacter || !selectedCharacter.id || !currentRoomId) return;
+    if (!selectedCharacter?.id || !currentRoomId) return;
     const token = localStorage.getItem('jwt_token');
-    // Vstup do místnosti
-    fetch(`${API_URL}/api/room-presence/join`, {
+    // Přihlášení do místnosti
+    fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/presence`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ characterId: selectedCharacter.id, roomId: currentRoomId })
+      credentials: 'include',
+      body: JSON.stringify({ characterId: selectedCharacter.id, isOnline: true })
     });
-    // Odchod z místnosti při unmountu nebo změně místnosti/postavy
+    // Odhlášení při odchodu
     return () => {
-      fetch(`${API_URL}/api/room-presence/leave`, {
+      fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/presence`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ characterId: selectedCharacter.id, roomId: currentRoomId })
+        credentials: 'include',
+        body: JSON.stringify({ characterId: selectedCharacter.id, isOnline: false })
       });
     };
-  }, [selectedCharacter, currentRoomId]);
+  }, [selectedCharacter?.id, currentRoomId]);
 
   // Loading states
   if (authLoading || roomsLoading || messagesLoading) {

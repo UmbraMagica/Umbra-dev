@@ -16,7 +16,7 @@ export default function ChatRoomSimpleTest() {
   });
 
   // Filtr pro výběr postavy uživatelem:
-  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem && char.userId === user?.id) : [];
+  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !(char.deathDate ?? char.death_date) && !char.isSystem && char.userId === user?.id) : [];
 
   // Simple access check
   const canAccess = user?.role === 'admin' || userCharacters.length > 0;

@@ -95,7 +95,7 @@ export default function Cemetery() {
                 
                 <CardContent className="space-y-3">
                   <div className="text-sm text-purple-300">
-                    <strong>Datum smrti:</strong> {formatDate(character.deathDate)}
+                    <strong>Datum smrti:</strong> {character.deathDate || character.death_date ? new Date(character.deathDate ?? character.death_date).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
                   </div>
                   
                   {character.deathReason && (

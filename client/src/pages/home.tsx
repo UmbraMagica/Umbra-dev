@@ -93,9 +93,9 @@ export default function Home() {
   });
 
   // Find the active character from database (isActive: true)
-  const activeCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => char.isActive && !char.deathDate) : null;
+  const activeCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => char.isActive && !(char.deathDate ?? char.death_date)) : null;
   // Fallback to first alive character if no active character is set
-  const firstAliveCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => !char.deathDate) : null;
+  const firstAliveCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => !(char.deathDate ?? char.death_date)) : null;
 
   // Load character from localStorage on component mount
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function Home() {
       if (savedCharacterId) {
         const savedCharacter = Array.isArray(userCharacters)
           ? userCharacters.find((char: any) => 
-              char.id === parseInt(savedCharacterId) && char.userId === user.id && !char.deathDate
+              char.id === parseInt(savedCharacterId) && char.userId === user.id && !(char.deathDate ?? char.death_date)
             )
           : undefined;
         if (savedCharacter) {
@@ -294,7 +294,7 @@ export default function Home() {
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {Array.isArray(userCharacters) ? userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                    {Array.isArray(userCharacters) ? userCharacters.filter((char: any) => !(char.deathDate ?? char.death_date)).map((character: any) => (
                       <SelectItem key={character.id} value={character.id.toString()}>
                         <div className="flex items-center gap-2">
                           <CharacterAvatar character={character} size="sm" />
@@ -511,7 +511,7 @@ export default function Home() {
                   <Button 
                     variant="ghost"
                     className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
-                    onClick={() => window.open('/wiki', '_blank')}
+                    onClick={() => window.open('https://umbramagica.wizardy.cz/doku.php?id=start', '_blank')}
                   >
                     <div className="flex items-center space-x-3">
                       <Globe className="h-5 w-5 text-blue-400" />

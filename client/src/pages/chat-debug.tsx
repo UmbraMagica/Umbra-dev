@@ -26,9 +26,9 @@ export default function ChatDebug() {
     }
   });
 
-  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const filteredCharacters = allUserCharacters.filter((char: any) => !(char.deathDate ?? char.death_date) && !char.isSystem);
   
-  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem && char.userId === user?.id);
+  const userCharacters = allUserCharacters.filter((char: any) => !(char.deathDate ?? char.death_date) && !char.isSystem && char.userId === user?.id);
 
   const needsCharacter = user?.role !== 'admin';
 
@@ -55,7 +55,7 @@ export default function ChatDebug() {
                 {allUserCharacters.map((char: any) => (
                   <li key={char.id} className="text-sm">
                     {char.id}: {char.firstName} {char.middleName ? `${char.middleName} ` : ''}{char.lastName} 
-                    {char.deathDate && ' (DEAD)'}
+                    {char.deathDate ?? char.death_date ? ' (DEAD)' : ''}
                     {char.isSystem && ' (SYSTEM)'}
                   </li>
                 ))}

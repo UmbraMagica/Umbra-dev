@@ -180,7 +180,7 @@ export default function ChatRoom() {
   useEffect(() => {
     // Filter only alive characters (not in cemetery) and exclude system characters
     const filteredCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => {
-      const isAlive = !char.deathDate;
+      const isAlive = !(char.deathDate ?? char.death_date);
       const isNotSystem = !char.isSystem;
       return isAlive && isNotSystem;
     }) : [];
@@ -347,7 +347,7 @@ export default function ChatRoom() {
 
   // Filter and sort characters - moved to useEffect above
   const filteredCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => {
-    const isAlive = !char.deathDate;
+    const isAlive = !(char.deathDate ?? char.death_date);
     const isNotSystem = !char.isSystem;
     return isAlive && isNotSystem;
   }) : [];
