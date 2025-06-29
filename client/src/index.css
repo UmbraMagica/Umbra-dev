@@ -1,13 +1,13 @@
 /* Import Google Fonts first - must be at the very top */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Cinzel:wght@400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 42 44% 95%; /* pergamenově světlá */
-  --foreground: 25 20% 20%; /* tmavě hnědá */
+ --background: 40 25% 92%;          /* světlá béžová pergamen */
+  --foreground: 35 15% 20%;          /* tmavší hnědá */
   --muted: 42 30% 85%;      /* na pozadí textových polí */
   --muted-foreground: 25 15% 45%;
   --popover: 0 0% 100%;
@@ -16,13 +16,13 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 0 70% 45%;     /* vínová #991B1B */
+  --primary: 30 60% 40%;             /* teplá zlatá */
   --primary-foreground: 0 0% 98%;
-  --secondary: 137 27% 36%; /* temně zelená #2F5E4E */
+ --secondary: 20 30% 30%;           /* hnědá */
   --secondary-foreground: 0 0% 98%;
-  --accent: 43 96% 56%; /* #F59E0B */
+ --accent: 35 80% 50%;              /* mechová zelená */
   --accent-foreground: 0 0% 98%;
-  --destructive: 0 84.2% 60.2%;
+  --destructive: 5 70% 40%;          /* červenohnědá */
   --destructive-foreground: 60 9.1% 97.8%;
   --ring: 20 14.3% 4.1%;
   --radius: 0.5rem;
@@ -70,16 +70,15 @@
     margin: 0;
     padding: 0;
 
-    background-color: hsl(var(--background));
-    background-image:
-      url("data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3e%3cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3e%3cfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3' stitchTiles='stitch' /%3e%3c/filter%3e%3crect width='200' height='200' filter='url(%23noise)' fill='none' /%3e%3c/svg%3e"),
-      url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3e%3cdefs%3e%3cpattern id='magicSymbols' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'%3e%3ccircle cx='10' cy='10' r='2' fill='%237e5e3b' fill-opacity='0.1'/%3e%3cpath d='M10 5 L10 15 M5 10 L15 10' stroke='%234b6f44' stroke-width='1' stroke-opacity='0.15'/%3e%3ccircle cx='10' cy='10' r='1' fill='%234b6f44' fill-opacity='0.15'/%3e%3cpath d='M7 7 L13 13 M13 7 L7 13' stroke='%237e5e3b' stroke-width='0.7' stroke-opacity='0.1'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='60' height='60' fill='%23f5f0e6'/%3e%3crect width='60' height='60' fill='url(%23magicSymbols)' /%3e%3c/svg%3e");
-    background-repeat: repeat, repeat;
-    background-size: 200px 200px, 20px 20px;
-
-    @apply text-foreground font-serif antialiased;
     font-family: 'Crimson Pro', serif;
-    font-size: 18px;
+  font-size: 25px;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+
+  /* Pergamenová textura */
+  background-image: url("data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3e%3cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3e%3cfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3' stitchTiles='stitch' /%3e%3c/filter%3e%3crect width='200' height='200' filter='url(%23noise)' fill='none' /%3e%3c/svg%3e");
+  background-repeat: repeat;
+  background-size: 200px 200px;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -89,6 +88,38 @@
   }
 }
 
+
+button {
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-primary {
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+  color: hsl(var(--background));
+  padding: 0.75rem 1.5rem;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.button-primary:hover {
+  transform: scale(1.05);
+}
+
+.button-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--background));
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius);
+  transition: background-color 0.3s ease;
+}
+
+.button-secondary:hover {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 98%);
+} 
 @layer components {
   .rpg-bg-pattern {
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237C3AED' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
