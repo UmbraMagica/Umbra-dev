@@ -41,6 +41,7 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { MoonPhase } from "@/components/MoonPhase";
 import { apiFetch } from "@/lib/queryClient";
 import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
+import ChatCategories from "./chat-categories";
 
 interface OnlineCharacter {
   id: number;
@@ -550,7 +551,7 @@ export default function Home() {
 
 
             {/* Influence Bar */}
-            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+            <Card className="bg-card border-border">
               <CardContent className="p-6">
                 <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
                   <div className="text-2xl mr-3">⚔️</div>
@@ -799,6 +800,9 @@ export default function Home() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Chaty a oblasti */}
+            <ChatCategories />
           </div>
 
           <div className="space-y-8">

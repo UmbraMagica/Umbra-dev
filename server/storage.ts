@@ -915,15 +915,24 @@ export class DatabaseStorage implements IStorage {
       }
     });
 
-    // Third pass: build hierarchy
-    categories?.forEach(cat => {
-      const category = categoryMap.get(cat.id);
-      if (cat.parent_id && categoryMap.has(cat.parent_id)) {
-        categoryMap.get(cat.parent_id).children.push(category);
-      } else {
-        rootCategories.push(category);
-      }
-    });
+    // === OPRAVA: Rekurzivně přiřadit rooms do všech podkategorií ===
+    function assignRoomsRecursively(category: any) {
+      if (!category || !category.children) return;
+      category.children.forEach((child: any) => {
+        // Přidej rooms do child (oblast)
+        child.rooms = child.rooms || [];
+        filteredRooms.forEach(room => {
+          const camelRoom = toCamel(room);
+          if (camelRoom.category_id === child.id) {
+            child.rooms.push(camelRoom);
+          }
+        });
+        // Rekurzivně pro další úroveň
+        assignRoomsRecursively(child);
+      });
+    }
+    rootCategories.forEach(assignRoomsRecursively);
+    // === KONEC OPRAVY ===
 
     return rootCategories;
   }
@@ -1057,7 +1066,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
-    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt', { ascending: false }).limit(1);
+    const { data, error } = await supabase.from('messages').select('*').eq('character_id', characterId).order('created_at', { ascending: false }).limit(1);
     if (error || !data || data.length === 0) return undefined;
     return data[0];
   }
