@@ -1,46 +1,67 @@
-/* Import fantasy Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+English:ital,wght@0,400;1,400&display=swap');
+/* Import Google Fonts first - must be at the very top */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:wght@300;400;600&display=swap');
+
+body {
+  font-family: 'Crimson Pro', serif;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 37 33% 94%;      /* pergamenová */
-  --foreground: 36 80% 10%;      /* temně hnědá */
-  --muted: 37 33% 94%;           /* pergamen */
-  --muted-foreground: 37 20% 40%;
-  --primary: 38 71% 55%;         /* zlatá #D4AF37 */
+ --background: 42 44% 95%; /* pergamenově světlá */
+  --foreground: 25 20% 20%; /* tmavě hnědá */
+  --muted: 42 30% 85%;      /* na pozadí textových polí */
+  --muted-foreground: 25 15% 45%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 0 70% 45%;     /* vínová #991B1B */
   --primary-foreground: 0 0% 98%;
-  --secondary: 203 28% 37%;      /* temně modrá */
-  --secondary-foreground: 43 96% 56%;
-  --accent: 151 28% 37%;         /* tmavě zelená */
+  --secondary: 137 27% 36%; /* temně zelená #2F5E4E */
+  --secondary-foreground: 0 0% 98%;
+  --accent: 43 96% 56%; /* #F59E0B */
   --accent-foreground: 0 0% 98%;
-  --destructive: 356 62% 40%;    /* tmavě červená */
+  --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 38 71% 55%;
-  --radius: 0.7rem;
-  --magic-gold: 44 66% 63%;      /* zlatavá */
-  --magic-bronze: 30 55% 40%;
-  --magic-silver: 210 14% 78%;
-  --magic-emerald: 146 63% 40%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+
+  /* RPG Theme Colors */
+  --rpg-primary: 262 83% 58%; /* #7C3AED */
+  --rpg-secondary: 271 91% 65%; /* #A855F7 */
+  --rpg-accent: 43 96% 56%; /* #F59E0B */
+  --rpg-success: 158 64% 52%; /* #10B981 */
+  --rpg-dark: 26 20% 15%;   /* tmavě hnědá */
+  --rpg-medium: 36 20% 25%; /* světle hnědá */
+  --rpg-gray: 35 15% 60%;   /* tlumená béžová */
 }
 
 .dark {
-  --background: 36 20% 13%;
-  --foreground: 37 33% 94%;
-  --muted: 36 20% 13%;
-  --muted-foreground: 44 25% 65%;
-  --primary: 38 71% 55%;
-  --primary-foreground: 37 33% 94%;
-  --secondary: 203 28% 37%;
-  --secondary-foreground: 37 33% 94%;
-  --accent: 151 28% 37%;
-  --accent-foreground: 37 33% 94%;
-  --destructive: 356 62% 40%;
-  --destructive-foreground: 37 33% 94%;
-  --ring: 38 71% 55%;
-  --radius: 0.7rem;
+  --background: 217 33% 17%; /* #111827 */
+  --foreground: 0 0% 98%;
+  --muted: 217 19% 27%; /* #1F2937 */
+  --muted-foreground: 215 20.2% 65.1%;
+  --popover: 217 33% 17%; /* #111827 */
+  --popover-foreground: 0 0% 98%;
+  --card: 217 19% 27%; /* #1F2937 */
+  --card-foreground: 0 0% 98%;
+  --border: 215 25% 27%; /* #374151 */
+  --input: 215 25% 27%; /* #374151 */
+  --primary: 262 83% 58%; /* #7C3AED */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 217 19% 27%; /* #1F2937 */
+  --secondary-foreground: 0 0% 98%;
+  --accent: 43 96% 56%; /* #F59E0B */
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 262 83% 58%;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -49,87 +70,46 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'IM Fell English', 'Cinzel', serif;
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6, .fantasy-font {
-    font-family: 'Cinzel', 'IM Fell English', serif;
-    letter-spacing: 0.04em;
-    text-shadow: 0 0 8px #d4af37, 0 2px 2px #fffbe0;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
   }
 }
 
 @layer components {
-  /* Kouzelnický card styl */
-  .rpg-card, .login-card {
-    @apply bg-card/90 backdrop-blur-md rounded-2xl;
-    border: 3px solid hsl(var(--magic-gold));
-    box-shadow: 0 0 18px 2px rgba(212,175,55,0.15);
-    padding: 2rem;
+  .rpg-bg-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237C3AED' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
-  /* Kouzelnická tlačítka */
-  .rpg-button-primary {
-    @apply w-full flex justify-center items-center py-3 px-4 text-primary-foreground font-medium rounded-lg;
-    background: linear-gradient(90deg, hsl(var(--magic-gold)), hsl(var(--primary)));
-    border: 2px solid hsl(var(--magic-gold));
-    box-shadow: 0 0 12px 2px rgba(212,175,55,0.20);
-    transition: transform 0.2s, box-shadow 0.2s;
+  .rpg-gradient-bg {
+    background: linear-gradient(135deg, hsl(var(--rpg-dark)), hsl(var(--rpg-medium)), hsl(var(--rpg-dark)));
   }
-  .rpg-button-primary:hover {
-    transform: scale(1.07);
-    filter: brightness(1.1) drop-shadow(0 0 8px #ffefb2);
-    box-shadow: 0 0 18px 6px #f5e7b2;
+
+  .rpg-card {
+    @apply bg-card/80 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-2xl;
+  }
+
+  .rpg-input {
+    @apply w-full px-4 py-3 border border-input bg-background/50 placeholder:text-muted-foreground text-foreground rounded-lg;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+  }
+
+  .rpg-button-primary {
+    @apply w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg;
+    @apply text-primary-foreground bg-gradient-to-r from-primary to-secondary;
+    @apply hover:from-secondary hover:to-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary;
+    @apply transition-all duration-200 transform hover:scale-105;
   }
 
   .rpg-button-secondary {
     @apply py-3 px-4 border border-border text-foreground rounded-lg;
-    background: hsl(var(--muted));
-    transition: background 0.2s, box-shadow 0.2s;
-  }
-  .rpg-button-secondary:hover {
-    background: hsl(var(--magic-silver));
-    box-shadow: 0 0 10px 2px #ddd;
+    @apply hover:bg-muted transition-all duration-200;
   }
 
-  /* Kouzelnické vstupy */
-  .rpg-input {
-    @apply w-full px-4 py-3 border border-input bg-muted/70 placeholder:text-muted-foreground text-foreground rounded-lg;
-    font-family: 'IM Fell English', serif;
-    background: rgba(255,249,232,0.85);
-    box-shadow: 0 1px 6px 0 rgba(44,38,14,0.07);
+  .fantasy-font {
+    font-family: 'Cinzel', serif;
   }
-
-  /* Magický rámeček */
-  .magic-border {
-    border: 2px solid hsl(var(--magic-gold));
-    box-shadow: 0 0 16px 2px rgba(212,175,55,0.12);
-    border-radius: 1rem;
-  }
-}
-
-/* Pozadí přihlašovací stránky */
-.login-page {
-  min-height: 100vh;
-  width: 100vw;
-  background:
-    linear-gradient(rgba(50,40,20,0.45), rgba(50,40,20,0.65)),
-    url('https://fantasy-hive.co.uk/wp-content/uploads/2019/12/Magic-Systems-Feature-Image.jpg') center/cover no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Jemná textura pro celou stránku (volitelné) */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: url('https://www.transparenttextures.com/patterns/old-mathematics.png');
-  opacity: 0.09;
-  z-index: 0;
 }
