@@ -831,15 +831,24 @@ export default function Home() {
                       </Badge>
                       <div className="mt-4">
                         {lastChatRoom?.room ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => window.open(`/chat/room/${lastChatRoom.room.id}`, '_blank')}
-                            className="w-full text-xs"
+                          <a
+                            href={`/chat/room/${lastChatRoom.room.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full"
                           >
-                            <MessageCircle className="h-3 w-3 mr-2" />
-                            Poslední chat: {lastChatRoom.room.name}
-                          </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full text-xs"
+                              asChild
+                            >
+                              <span className="flex items-center justify-center">
+                                <MessageCircle className="h-3 w-3 mr-2" />
+                                Poslední chat: {lastChatRoom.room.name}
+                              </span>
+                            </Button>
+                          </a>
                         ) : (
                           <div className="text-xs text-muted-foreground">
                             Poslední chat: —

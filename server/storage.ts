@@ -1057,7 +1057,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
-    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt').limit(1);
+    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt', { ascending: false }).limit(1);
     if (error || !data || data.length === 0) return undefined;
     return data[0];
   }
