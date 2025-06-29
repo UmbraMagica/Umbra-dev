@@ -5,12 +5,12 @@
 @tailwind utilities;
 
 :root {
-  --background: 35 20% 94%;          /* béžová pergamen */
-  --foreground: 100 10% 20%;         /* tmavá mechová */
-  --primary: 135 35% 35%;            /* mechová zelená */
-  --secondary: 35 40% 40%;           /* zemitá hnědá */
-  --accent: 45 80% 50%;              /* zlatá */
-  --destructive: 350 60% 35%;        /* vínová */
+  --background: 40 25% 92%;          /* světlá béžová pergamen */
+  --foreground: 35 15% 20%;          /* tmavší hnědá */
+  --primary: 30 60% 40%;             /* teplá zlatá */
+  --secondary: 20 30% 30%;           /* hnědá */
+  --accent: 35 80% 50%;              /* mechová zelená */
+  --destructive: 5 70% 40%;          /* červenohnědá */
   --radius: 0.5rem;
 }
 
@@ -20,10 +20,10 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 
-  /* přímý background s kouzelnými symboly */
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3e%3cdefs%3e%3cpattern id='magicSymbols' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3e%3ccircle cx='20' cy='20' r='3' fill='%234b6f44' fill-opacity='0.1'/%3e%3cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%237e5e3b' stroke-width='1' stroke-opacity='0.12'/%3e%3ccircle cx='20' cy='20' r='1' fill='%237e5e3b' fill-opacity='0.12'/%3e%3cpath d='M16 16 L24 24 M24 16 L16 24' stroke='%234b6f44' stroke-width='0.7' stroke-opacity='0.1'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='120' height='120' fill='%23f5f0e6'/%3e%3crect width='120' height='120' fill='url(%23magicSymbols)' /%3e%3c/svg%3e");
+  /* Pergamenová textura */
+  background-image: url("data:image/svg+xml,%3csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3e%3cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3e%3cfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='3' stitchTiles='stitch' /%3e%3c/filter%3e%3crect width='200' height='200' filter='url(%23noise)' fill='none' /%3e%3c/svg%3e");
   background-repeat: repeat;
-  background-size: 40px 40px;
+  background-size: 200px 200px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -61,5 +61,5 @@ button {
 
 .button-secondary:hover {
   background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground, 98%));
+  color: hsl(0 0% 98%);
 }
