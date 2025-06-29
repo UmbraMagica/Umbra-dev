@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Crown, LogIn } from "lucide-react";
+import { Crown, LogIn, Eye, EyeOff } from "lucide-react";
 
 export default function Landing() {
-  const [username, setUsername] = useState("Casey");
-  const [password, setPassword] = useState("test123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isLoginPending, loginError } = useAuth();
   const { toast } = useToast();
   
@@ -100,19 +101,28 @@ export default function Landing() {
               />
             </div>
             
-            <div>
+            <div className="relative">
               <Label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                 Heslo
               </Label>
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Zadejte heslo"
-                className="rpg-input"
+                className="rpg-input pr-10"
                 required
               />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-2 top-8 transform -translate-y-1/2 text-muted-foreground hover:text-accent focus:outline-none"
+                aria-label={showPassword ? "Skrýt heslo" : "Zobrazit heslo"}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
 
             <Button

@@ -1959,7 +1959,33 @@ export default function Admin() {
                                     size="sm"
                                     onClick={() => {
                                       setExpandedHousingRequest(request.id);
-                                      setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'approve' });
+                                      // Předvyplň adresu podle žádosti
+                                      let adresa = '';
+                                      if (request.location === 'area' && (request.selected_area || request.selected_area_id)) {
+                                        let area = null;
+                                        let areaName = '';
+                                        let categoryName = '';
+                                        if (Array.isArray(chatCategories)) {
+                                          area = chatCategories.find((cat: any) => cat.id === request.selected_area_id || cat.name === request.selected_area);
+                                          if (area) {
+                                            areaName = area.name;
+                                            if (area.parentId) {
+                                              const parent = chatCategories.find((cat: any) => cat.id === area.parentId);
+                                              if (parent) {
+                                                categoryName = parent.name;
+                                              }
+                                            }
+                                          } else {
+                                            areaName = request.selected_area || '';
+                                          }
+                                        }
+                                        adresa = categoryName ? `${categoryName} / ${areaName}` : areaName;
+                                      } else if (request.location === 'custom' && request.custom_location) {
+                                        adresa = request.custom_location;
+                                      } else if (request.location === 'dormitory') {
+                                        adresa = 'Kolej';
+                                      }
+                                      setHousingFormData({ assignedAddress: adresa, reviewNote: '', action: 'approve' });
                                     }}
                                     disabled={approveHousingMutation.isPending}
                                     className="text-green-400 hover:text-green-300"
@@ -2006,30 +2032,62 @@ export default function Admin() {
                                 </div>
                                 {/* Rozbalovací formulář pro schválení žádosti */}
                                 {expandedHousingRequest === request.id && housingFormData.action === 'approve' && (
-                                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                                    <div className="mb-2">
+                                  <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-background shadow-sm max-w-md">
+                                    {/* Původní návrh uživatele */}
+                                    <div className="mb-2 text-xs text-muted-foreground">
+                                      <span className="font-medium">Návrh uživatele:</span> {(() => {
+                                        let navrh = '';
+                                        if (request.location === 'area' && (request.selected_area || request.selected_area_id)) {
+                                          let area = null;
+                                          let areaName = '';
+                                          let categoryName = '';
+                                          if (Array.isArray(chatCategories)) {
+                                            area = chatCategories.find((cat: any) => cat.id === request.selected_area_id || cat.name === request.selected_area);
+                                            if (area) {
+                                              areaName = area.name;
+                                              if (area.parentId) {
+                                                const parent = chatCategories.find((cat: any) => cat.id === area.parentId);
+                                                if (parent) {
+                                                  categoryName = parent.name;
+                                                }
+                                              }
+                                            } else {
+                                              areaName = request.selected_area || '';
+                                            }
+                                          }
+                                          navrh = categoryName ? `${categoryName} / ${areaName}` : areaName;
+                                        } else if (request.location === 'custom' && request.custom_location) {
+                                          navrh = request.custom_location;
+                                        } else if (request.location === 'dormitory') {
+                                          navrh = 'Kolej';
+                                        }
+                                        return navrh || <span className="italic">(neuvedeno)</span>;
+                                      })()}
+                                    </div>
+                                    <div className="mb-3">
                                       <label className="block text-sm font-medium mb-1">
                                         Přidělená adresa <span className="text-red-500">*</span>
                                       </label>
                                       <input
                                         type="text"
-                                        className="w-full border rounded px-2 py-1"
+                                        className="w-full border rounded px-2 py-1 bg-muted"
                                         value={housingFormData.assignedAddress}
                                         onChange={e => setHousingFormData(f => ({ ...f, assignedAddress: e.target.value }))}
                                         placeholder="Zadejte přidělenou adresu"
+                                        autoFocus
                                       />
                                     </div>
-                                    <div className="mb-2">
+                                    <div className="mb-3">
                                       <label className="block text-sm font-medium mb-1">Poznámka administrátora</label>
                                       <textarea
-                                        className="w-full border rounded px-2 py-1"
+                                        className="w-full border rounded px-2 py-1 bg-muted"
                                         value={housingFormData.reviewNote}
                                         onChange={e => setHousingFormData(f => ({ ...f, reviewNote: e.target.value }))}
                                         placeholder="Volitelná poznámka k žádosti"
                                         rows={2}
                                       />
                                     </div>
-                                    <div className="flex gap-2 mt-2">
+                                    <div className="flex gap-2 mt-2 justify-end">
                                       <Button
                                         variant="default"
                                         size="sm"
@@ -2663,7 +2721,7 @@ export default function Admin() {
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {nonSystemCharacters
-                    .filter((character: any) => character.deathDate)
+                    .filter((character: any) => character.deathDate ?? character.death_date)
                     .map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
                       <div className="flex items-center space-x-3">
@@ -2688,7 +2746,7 @@ export default function Admin() {
                       </Badge>
                     </div>
                   ))}
-                  {nonSystemCharacters.filter((c: any) => c.deathDate).length === 0 && (
+                  {nonSystemCharacters.filter((c: any) => c.deathDate ?? c.death_date).length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Hřbitov je prázdný
                     </div>
@@ -3199,77 +3257,40 @@ export default function Admin() {
 
       {/* Přehled ubytování postav */}
       {showHousingOverview && (
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-              <Book className="h-5 w-5 text-accent mr-2" />
-              Přehled ubytování postav
-              <Button variant="ghost" size="sm" className="ml-4" onClick={() => setShowHousingOverview(false)}>
-                Zavřít
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 pr-4">Postava</th>
-                    <th className="text-left py-2 pr-4">Typ ubytování</th>
-                    <th className="text-left py-2">Adresa / Název</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Array.isArray(nonSystemCharacters) && nonSystemCharacters.length > 0 ? (
-                    // 4. Seřadím postavy abecedně podle příjmení a jména
-                    [...nonSystemCharacters].sort((a, b) => {
-                      const aLast = (a.lastName || a.last_name || '').toLowerCase();
-                      const bLast = (b.lastName || b.last_name || '').toLowerCase();
-                      if (aLast < bLast) return -1;
-                      if (aLast > bLast) return 1;
-                      const aFirst = (a.firstName || a.first_name || '').toLowerCase();
-                      const bFirst = (b.firstName || b.first_name || '').toLowerCase();
-                      return aFirst.localeCompare(bFirst);
-                    }).map((char: any) => {
-                      let typ = '-';
-                      let adresa = '-';
-                      if (char.residence_type === 'dormitory' || char.residence_type === 'ubytovna') {
-                        typ = 'Ubytovna';
-                        adresa = char.residence_name || 'Ubytovna';
-                      } else if (char.residence_type === 'shared') {
-                        typ = 'Sdílené';
-                        adresa = char.residence_name || char.residence || '-';
-                      } else if (char.residence_type === 'apartment') {
-                        typ = 'Byt';
-                        adresa = char.residence_name || char.residence || '-';
-                      } else if (char.residence_type === 'house') {
-                        typ = 'Dům';
-                        adresa = char.residence_name || char.residence || '-';
-                      } else if (char.residence_type === 'mansion') {
-                        typ = 'Sídlo';
-                        adresa = char.residence_name || char.residence || '-';
-                      } else if (char.residence) {
-                        typ = 'Vlastní';
-                        adresa = char.residence;
-                      }
-                      return (
-                        <tr key={char.id} className="border-b last:border-0">
-                          <td className="py-2 pr-4 font-medium text-foreground">
-                            {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
-                          </td>
-                          <td className="py-2 pr-4">{typ}</td>
-                          <td className="py-2">{adresa}</td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr><td colSpan={3} className="py-4 text-center text-muted-foreground">Žádné postavy</td></tr>
-                  )}
-                </tbody>
-              </table>
+        <Dialog open={showHousingOverview} onOpenChange={setShowHousingOverview}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Přehled ubytování postav</DialogTitle>
+            </DialogHeader>
+            <div className="max-h-96 overflow-y-auto space-y-2">
+              {Array.isArray(nonSystemCharacters) && nonSystemCharacters.length > 0 ? (
+                [...nonSystemCharacters]
+                  .filter(char => char.residence || char.residence_name)
+                  .sort((a, b) => {
+                    const aLast = (a.lastName || a.last_name || '').toLowerCase();
+                    const bLast = (b.lastName || b.last_name || '').toLowerCase();
+                    if (aLast < bLast) return -1;
+                    if (aLast > bLast) return 1;
+                    const aFirst = (a.firstName || a.first_name || '').toLowerCase();
+                    const bFirst = (b.firstName || b.first_name || '').toLowerCase();
+                    return aFirst.localeCompare(bFirst);
+                  })
+                  .map((char: any) => (
+                    <div key={char.id} className="flex flex-col border-b last:border-0 pb-2">
+                      <span className="font-medium text-foreground">
+                        {char.firstName || char.first_name} {char.middleName || char.middle_name ? (char.middleName || char.middle_name) + ' ' : ''}{char.lastName || char.last_name}
+                      </span>
+                      <span className="text-muted-foreground text-sm">
+                        {char.residence || char.residence_name}
+                      </span>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center text-muted-foreground py-4">Žádné postavy s ubytováním</div>
+              )}
             </div>
-          </CardContent>
-        </Card>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
