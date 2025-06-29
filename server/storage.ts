@@ -910,23 +910,8 @@ export class DatabaseStorage implements IStorage {
     // Second pass: assign rooms to categories
     filteredRooms?.forEach(room => {
       const camelRoom = toCamel(room);
-      // Pokud má místnost category_id a kategorie existuje, přiřaď ji
       if (camelRoom.category_id && categoryMap.has(camelRoom.category_id)) {
         categoryMap.get(camelRoom.category_id).rooms.push(camelRoom);
-      } else {
-        // Fallback: pokud nemá category_id, zkus podle názvu kategorie v room.name
-        // (např. "Příčná ulice" v názvu)
-        const fallbackCategory = Array.from(categoryMap.values()).find((cat: any) =>
-          camelRoom.name && cat.name && camelRoom.name.toLowerCase().includes(cat.name.toLowerCase())
-        );
-        if (fallbackCategory) {
-          fallbackCategory.rooms.push(camelRoom);
-        } else {
-          // Pokud se nenašla žádná kategorie, přiřaď do první root kategorie (aby se nikdy neztratila)
-          if (rootCategories.length > 0) {
-            rootCategories[0].rooms.push(camelRoom);
-          }
-        }
       }
     });
 
